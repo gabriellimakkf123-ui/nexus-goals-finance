@@ -1,90 +1,96 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatCurrency, calculateProgress, formatDate, generateId } from '../../utils/formatters';
-import { DollarSign, Wallet, Target, Users, TrendingUp, ChevronDown, Plus, CheckSquare, Square, FileText, ShoppingCart, UserCheck, Trash2, Edit2, CheckCircle2 } from 'lucide-react';
+import { DollarSign, Wallet, Target, Users, TrendingUp, ChevronDown, Plus, CheckSquare, Square, FileText, ShoppingCart, UserCheck, Trash2, Edit2 } from 'lucide-react';
+import { Modal } from '../Common/Modal';
 
 export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenCalendarModal }) => {
   const {
-    goals, addGoal, updateGoal, deleteGoal,
+    goals, addGoal, deleteGoal, updateGoal,
     transactions, addTransaction,
-    clients, moveClientStage,
+    clients,
     tasks, addTask, toggleTask, deleteTask
   } = useApp();
 
-  // Estado local para comissões personalizadas (%)
-  const [commissionRate, setCommissionRate] = useState(() => {
-    return parseFloat(localStorage.getItem('vertex_commission_rate')) || 15; // 15% por padrão
+  // Modais específicos acionados pelos botões "+" do Dashboard
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isCommissionModalOpen, setIsCommissionModalOpen] = useState(false);
+
+  // Estado dos formulários de modal da Dashboard
+  const [taskForm, setTaskForm] = useState({ text: '', priority: 'Alta', date: new Date().toISOString().split('T')[0] });
+  const [productForm, setProductForm] = useState({ name: '', price: '', category: 'Vendas / Serviços' });
+  const [commissionForm, setCommissionForm] = useState({
+    rate: localStorage.getItem('vertex_commission_rate') || '15',
+    target: localStorage.getItem('vertex_commission_target') || '15000'
   });
-  const [commissionTarget, setCommissionTarget] = useState(() => {
-    return parseFloat(localStorage.getItem('vertex_commission_target')) || 15000;
-  });
 
-  // Estado local para adicionar tarefa rápida
-  const [newTaskText, setNewTaskText] = useState('');
-  const [newTaskPriority, setNewTaskPriority] = useState('Alta');
+  const commissionRate = parseFloat(commissionForm.rate) || 15;
+  const commissionTarget = parseFloat(commissionForm.target) || 15000;
 
-  const handleCommissionRateChange = () => {
-    const newRateStr = prompt('Defina a sua taxa de comissão (%):', commissionRate.toString());
-    if (newRateStr === null) return;
-    const newRate = parseFloat(newRateStr);
-    if (!isNaN(newRate) && newRate >= 0) {
-      setCommissionRate(newRate);
-      localStorage.setItem('vertex_commission_rate', newRate.toString());
-    }
-  };
-
-  const handleCommissionTargetChange = () => {
-    const newTargetStr = prompt('Defina a sua Meta de Comissão no Mês (R$):', commissionTarget.toString());
-    if (newTargetStr === null) return;
-    const newTarget = parseFloat(newTargetStr);
-    if (!isNaN(newTarget) && newTarget > 0) {
-      setCommissionTarget(newTarget);
-      localStorage.setItem('vertex_commission_target', newTarget.toString());
-    }
-  };
-
-  const handleCreateTaskSubmit = (e) => {
+  // Submissão de Nova Tarefa pelo Modal "+" da Tarefa
+  const handleTaskSubmit = (e) => {
     e.preventDefault();
-    if (!newTaskText.trim()) return;
-    addTask(newTaskText.trim(), newTaskPriority);
-    setNewTaskText('');
+    if (!taskForm.text.trim()) return;
+    addTask(taskForm.text.trim(), taskForm.priority, taskForm.date);
+    setTaskForm({ text: '', priority: 'Alta', date: new Date().toISOString().split('T')[0] });
+    setIsTaskModalOpen(false);
   };
 
-  // --- CÁLCULOS REAIS DAS FINANÇAS & MRR ---
+  // Submissão de Novo Produto/Venda pelo Modal "+" do Produto
+  const handleProductSubmit = (e) => {
+    e.preventDefault();
+    if (!productForm.name.trim() || !productForm.price) return;
+    addTransaction({
+      id: generateId(),
+      description: `Venda: ${productForm.name}`,
+      amount: parseFloat(productForm.price),
+      type: 'receita',
+      account: 'empresa',
+      category: productForm.name,
+      date: new Date().toISOString().split('T')[0],
+      recurring: false
+    });
+    setProductForm({ name: '', price: '', category: 'Vendas / Serviços' });
+    setIsProductModalOpen(false);
+  };
+
+  // Submissão de Alteração de Comissões
+  const handleCommissionSubmit = (e) => {
+    e.preventDefault();
+    localStorage.setItem('vertex_commission_rate', commissionForm.rate);
+    localStorage.setItem('vertex_commission_target', commissionForm.target);
+    setIsCommissionModalOpen(false);
+  };
+
+  // --- CÁLCULOS REAIS ---
   const txEmpresa = transactions.filter((t) => t.account === 'empresa');
   const receitaPJ = txEmpresa.filter((t) => t.type === 'receita').reduce((sum, t) => sum + parseFloat(t.amount), 0);
   const despesaPJ = txEmpresa.filter((t) => t.type === 'despesa' || t.type === 'prolabore').reduce((sum, t) => sum + parseFloat(t.amount), 0);
   const saldoPJ = receitaPJ - despesaPJ;
 
-  // MRR Real: Clientes PJ fechados em mensalidade
   const mrrClients = clients.filter((c) => c.status === 'fechado' && c.contractType === 'mensalidade');
   const totalMRR = mrrClients.reduce((sum, c) => sum + parseFloat(c.value), 0);
 
-  // Caixa PF Real
   const txPessoal = transactions.filter((t) => t.account === 'pessoal');
   const receitaPF = txPessoal.filter((t) => t.type === 'receita').reduce((sum, t) => sum + parseFloat(t.amount), 0);
   const despesaPF = txPessoal.filter((t) => t.type === 'despesa').reduce((sum, t) => sum + parseFloat(t.amount), 0);
   const saldoPF = receitaPF - despesaPF;
 
-  // Comissões Reais: % sobre o Faturamento PJ
   const ganhoComissaoMes = (receitaPJ * commissionRate) / 100;
   const comissaoProgressPct = Math.min(100, Math.round((ganhoComissaoMes / commissionTarget) * 100));
 
-  // --- CÁLCULO REAL DO FUNIL DE VENDAS ---
+  // Funil Real
   const leadsCount = clients.filter((c) => c.status === 'prospeccao').length;
   const qualificadosCount = clients.filter((c) => c.status === 'proposta').length;
   const propostaCount = clients.filter((c) => c.status === 'proposta').length;
   const negociacaoCount = clients.filter((c) => c.status === 'fechado').length;
   const fechadosCount = clients.filter((c) => c.status === 'concluido' || c.status === 'fechado').length;
-
   const totalFunnelClients = clients.length;
   const conversionRate = totalFunnelClients > 0 ? ((fechadosCount / totalFunnelClients) * 100).toFixed(1) : '0.0';
 
-  // --- CÁLCULO REAL DO GRÁFICO DOS 12 MESES ---
+  // 12 Meses Reais
   const monthsNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-  const currentMonthIdx = new Date().getMonth();
-  
-  // Gerar últimos 12 meses ordenados
   const last12Months = [];
   for (let i = 11; i >= 0; i--) {
     const d = new Date();
@@ -93,7 +99,6 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
     const yNum = d.getFullYear();
     const mFormatted = (d.getMonth() + 1).toString().padStart(2, '0');
     
-    // Somar receita real das transações daquele mês/ano
     const monthTx = transactions.filter((t) => {
       if (t.type !== 'receita') return false;
       const tDate = t.date || '';
@@ -104,7 +109,6 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
     last12Months.push({ month: mName, value: valSum });
   }
 
-  // Ajustar pontos do SVG baseados nos valores reais
   const maxVal = Math.max(...last12Months.map((d) => d.value), 10000);
   const svgPoints = last12Months.map((d, idx) => {
     const x = (idx / 11) * 480 + 10;
@@ -115,24 +119,22 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
   const svgPathD = svgPoints.reduce((acc, pt, i) => {
     return i === 0 ? `M ${pt.x} ${pt.y}` : `${acc} L ${pt.x} ${pt.y}`;
   }, '');
-
   const svgAreaD = `${svgPathD} L ${svgPoints[11].x} 165 L ${svgPoints[0].x} 165 Z`;
 
-  // --- PRODUTOS / SERVIÇOS MAIS VENDIDOS REAIS ---
+  // Produtos Mais Vendidos Reais
   const categorySalesMap = {};
   transactions.filter((t) => t.type === 'receita').forEach((t) => {
-    const cat = t.category || 'Outros Serviços';
+    const cat = t.category || 'Vendas / Serviços';
     categorySalesMap[cat] = (categorySalesMap[cat] || 0) + 1;
   });
 
   const topProducts = Object.keys(categorySalesMap).length > 0
-    ? Object.entries(categorySalesMap).map(([name, count]) => ({ name, count, salesText: `${count} vendas` })).slice(0, 4)
+    ? Object.entries(categorySalesMap).map(([name, count]) => ({ name, count, salesText: `${count} vendas` }))
     : [
         { name: 'Contratos Mensais (MRR)', count: mrrClients.length, salesText: `${mrrClients.length} vendas` },
         { name: 'Projetos Pontuais', count: clients.filter(c => c.contractType === 'projeto_pontual').length, salesText: `${clients.filter(c => c.contractType === 'projeto_pontual').length} vendas` }
       ];
 
-  // Quick add amount to goal
   const handleQuickAddGoalAmount = (goal) => {
     const addStr = prompt(`Adicionar valor acumulado à meta "${goal.title}" (R$):`, '500');
     if (!addStr) return;
@@ -152,14 +154,14 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
       
-      {/* ROW 1: 4 KPIs Executivos com Dados Reais */}
+      {/* ROW 1: 4 KPIs Executivos */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
         gap: '1.25rem'
       }}>
         
-        {/* KPI 1: Receita Total (MRR) */}
+        {/* KPI 1: Receita Total */}
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '140px' }}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -189,12 +191,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
 
           <div style={{ marginTop: '0.75rem', height: '24px' }}>
             <svg viewBox="0 0 100 25" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-              <path
-                d="M0 20 Q15 18, 30 14 T60 10 T80 5 T100 8"
-                fill="none"
-                stroke="#DC2626"
-                strokeWidth="2.5"
-              />
+              <path d="M0 20 Q15 18, 30 14 T60 10 T80 5 T100 8" fill="none" stroke="#DC2626" strokeWidth="2.5" />
             </svg>
           </div>
         </div>
@@ -223,7 +220,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
           </div>
         </div>
 
-        {/* KPI 3: Meta do Mês */}
+        {/* KPI 3: Conclusão de Metas */}
         <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '140px' }}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -286,7 +283,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
       {/* ROW 2: Gráfico Real 12 Meses + Funil de Vendas Real */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
         
-        {/* Gráfico Real das Transações nos Últimos 12 Meses */}
+        {/* Gráfico Real 12 Meses */}
         <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <div>
@@ -327,7 +324,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
           </div>
         </div>
 
-        {/* Funil de Vendas Real Baseado no CRM */}
+        {/* Funil de Vendas Real */}
         <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <div>
@@ -335,7 +332,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Calculado dos cartões do seu CRM</span>
             </div>
             <button onClick={onOpenClientModal} className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}>
-              Ir para CRM
+              + Novo Cliente
             </button>
           </div>
 
@@ -376,18 +373,18 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
 
       </div>
 
-      {/* ROW 3: Comissões Editáveis + Meus Sonhos & Objetivos (Criar & Remover) + Atividades Recentes Reais */}
+      {/* ROW 3: Comissões + Meus Sonhos & Objetivos (com BOTÃO + FUNCIONANDO) + Atividades Recentes */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
         
-        {/* Comissões Interativas */}
+        {/* Comissões */}
         <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <DollarSign size={18} color="#DC2626" /> Comissões ({commissionRate}%)
               </h4>
-              <button onClick={handleCommissionRateChange} className="btn-icon" title="Editar % da Comissão" style={{ padding: '0.2rem' }}>
-                <Edit2 size={13} />
+              <button onClick={() => setIsCommissionModalOpen(true)} className="btn-icon" title="Editar Meta e % da Comissão" style={{ padding: '0.35rem' }}>
+                <Edit2 size={14} />
               </button>
             </div>
 
@@ -403,7 +400,7 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
               </div>
               <div>
                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Meta de Comissão</span>
-                <h5 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF', cursor: 'pointer' }} onClick={handleCommissionTargetChange} title="Clique para alterar meta">
+                <h5 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#FFFFFF' }}>
                   {formatCurrency(commissionTarget)}
                 </h5>
               </div>
@@ -420,55 +417,67 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
           </div>
         </div>
 
-        {/* Meus Sonhos & Objetivos (Completamente Editável: Criar + Remover + Aporte) */}
+        {/* Meus Sonhos & Objetivos -> O BOTÃO + ABRE O MODAL DE CRIAR META! */}
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               ⭐ Meus Sonhos & Objetivos
             </h4>
-            <button onClick={onOpenGoalModal} className="btn-icon" title="Adicionar Novo Sonho/Meta" style={{ padding: '0.2rem' }}>
-              <Plus size={14} />
+            <button
+              type="button"
+              onClick={onOpenGoalModal}
+              className="btn btn-primary"
+              style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+              title="Adicionar Novo Sonho / Meta"
+            >
+              <Plus size={16} /> Adicionar
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '220px', overflowY: 'auto' }}>
-            {goals.slice(0, 4).map((goal) => {
-              const pct = calculateProgress(goal.currentAmount, goal.targetAmount);
-              const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '220px', overflowY: 'auto' }}>
+            {goals.length === 0 ? (
+              <div style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                Nenhum sonho ou meta cadastrado.<br />Clique no botão <strong>+ Adicionar</strong> acima para criar.
+              </div>
+            ) : (
+              goals.slice(0, 4).map((goal) => {
+                const pct = calculateProgress(goal.currentAmount, goal.targetAmount);
+                const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
 
-              return (
-                <div key={goal.id} style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid var(--bg-glass-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
-                    <span style={{ fontWeight: '600', color: '#FFFFFF' }}>{goal.title}</span>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                      <strong style={{ color: '#FFFFFF' }}>{formatCurrency(goal.targetAmount)}</strong>
-                      <button onClick={() => handleQuickAddGoalAmount(goal)} className="btn-icon" title="+ Aporte" style={{ padding: '0.15rem' }}>
-                        <Plus size={12} color="#10B981" />
-                      </button>
-                      <button onClick={() => deleteGoal(goal.id)} className="btn-icon" title="Excluir" style={{ padding: '0.15rem', color: '#EF4444' }}>
-                        <Trash2 size={12} />
-                      </button>
+                return (
+                  <div key={goal.id} style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '0.65rem 0.85rem', borderRadius: '8px', border: '1px solid var(--bg-glass-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', marginBottom: '0.25rem' }}>
+                      <span style={{ fontWeight: '600', color: '#FFFFFF' }}>{goal.title}</span>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <strong style={{ color: '#FFFFFF' }}>{formatCurrency(goal.targetAmount)}</strong>
+                        <button onClick={() => handleQuickAddGoalAmount(goal)} className="btn-icon" title="+ Aporte" style={{ padding: '0.15rem' }}>
+                          <Plus size={12} color="#10B981" />
+                        </button>
+                        <button onClick={() => deleteGoal(goal.id)} className="btn-icon" title="Excluir" style={{ padding: '0.15rem', color: '#EF4444' }}>
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="progress-bar-bg">
+                      <div className="progress-bar-fill" style={{ width: `${pct}%`, background: '#DC2626' }} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                      <span>Faltam: {formatCurrency(remaining)}</span>
+                      <span>{pct}%</span>
                     </div>
                   </div>
-
-                  <div className="progress-bar-bg">
-                    <div className="progress-bar-fill" style={{ width: `${pct}%`, background: '#DC2626' }} />
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                    <span>Faltam: {formatCurrency(remaining)}</span>
-                    <span>{pct}%</span>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Atividades Recentes Reais */}
+        {/* Atividades Recentes */}
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <FileText size={18} color="#2563EB" /> Atividades Recentes (Reais)
+            <FileText size={18} color="#2563EB" /> Atividades Recentes
           </h4>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '220px', overflowY: 'auto' }}>
@@ -498,45 +507,27 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
 
       </div>
 
-      {/* ROW 4: Próximas Tarefas (Adicionar, Concluir & Excluir) + Produtos Mais Vendidos */}
+      {/* ROW 4: Próximas Tarefas (BOTÃO + ABRE MODAL DE TAREFA) + Produtos (BOTÃO + ABRE MODAL DE PRODUTO) */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem' }}>
         
-        {/* Próximas Tarefas Interativas */}
+        {/* Próximas Tarefas */}
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF' }}>
               Próximas Tarefas
             </h4>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{tasks.filter(t => !t.done).length} pendentes</span>
+            <button
+              type="button"
+              onClick={() => setIsTaskModalOpen(true)}
+              className="btn btn-primary"
+              style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+              title="Adicionar Nova Tarefa"
+            >
+              <Plus size={16} /> Adicionar
+            </button>
           </div>
 
-          {/* Form Inline de Adicionar Tarefa */}
-          <form onSubmit={handleCreateTaskSubmit} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-            <input
-              type="text"
-              className="form-input"
-              style={{ fontSize: '0.82rem', padding: '0.45rem 0.75rem' }}
-              placeholder="Digite uma nova tarefa..."
-              value={newTaskText}
-              onChange={(e) => setNewTaskText(e.target.value)}
-            />
-            <select
-              className="form-select"
-              style={{ width: 'auto', fontSize: '0.78rem', padding: '0.45rem 0.5rem' }}
-              value={newTaskPriority}
-              onChange={(e) => setNewTaskPriority(e.target.value)}
-            >
-              <option value="Alta">Alta</option>
-              <option value="Média">Média</option>
-              <option value="Baixa">Baixa</option>
-            </select>
-            <button type="submit" className="btn btn-primary" style={{ padding: '0.45rem 0.85rem', fontSize: '0.8rem' }}>
-              <Plus size={15} />
-            </button>
-          </form>
-
-          {/* Lista de Tarefas com Conclusão e Exclusão */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', maxHeight: '200px', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', maxHeight: '220px', overflowY: 'auto' }}>
             {tasks.map((task) => (
               <div
                 key={task.id}
@@ -574,16 +565,22 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
           </div>
         </div>
 
-        {/* Produtos / Serviços Mais Vendidos Reais */}
+        {/* Produtos / Serviços Mais Vendidos */}
         <div className="glass-panel" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
             <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF' }}>Produtos & Serviços</h4>
-            <button onClick={onOpenTxModal} className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }}>
-              + Venda
+            <button
+              type="button"
+              onClick={() => setIsProductModalOpen(true)}
+              className="btn btn-emerald"
+              style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}
+              title="Registrar Venda / Produto"
+            >
+              <Plus size={16} /> Registrar Venda
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '240px', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '220px', overflowY: 'auto' }}>
             {topProducts.map((prod, idx) => (
               <div key={idx}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '0.25rem' }}>
@@ -599,6 +596,122 @@ export const DashboardView = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModa
         </div>
 
       </div>
+
+      {/* MODAL 1: Nova Tarefa */}
+      <Modal isOpen={isTaskModalOpen} onClose={() => setIsTaskModalOpen(false)} title="Nova Tarefa">
+        <form onSubmit={handleTaskSubmit}>
+          <div className="form-group">
+            <label className="form-label">Descrição da Tarefa</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="ex: Enviar contrato assinado para cliente"
+              value={taskForm.text}
+              onChange={(e) => setTaskForm({ ...taskForm, text: e.target.value })}
+              required
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="form-group">
+              <label className="form-label">Prioridade</label>
+              <select
+                className="form-select"
+                value={taskForm.priority}
+                onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value })}
+              >
+                <option value="Alta">Alta</option>
+                <option value="Média">Média</option>
+                <option value="Baixa">Baixa</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Data de Vencimento</label>
+              <input
+                type="date"
+                className="form-input"
+                value={taskForm.date}
+                onChange={(e) => setTaskForm({ ...taskForm, date: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <button type="button" onClick={() => setIsTaskModalOpen(false)} className="btn btn-secondary">Cancelar</button>
+            <button type="submit" className="btn btn-primary">Adicionar Tarefa</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* MODAL 2: Registrar Produto / Venda */}
+      <Modal isOpen={isProductModalOpen} onClose={() => setIsProductModalOpen(false)} title="Registrar Venda de Produto / Serviço">
+        <form onSubmit={handleProductSubmit}>
+          <div className="form-group">
+            <label className="form-label">Nome do Produto ou Serviço</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="ex: Pacote de Consultoria Náutica / V550 Crossover"
+              value={productForm.name}
+              onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Valor da Venda (R$)</label>
+            <input
+              type="number"
+              step="0.01"
+              className="form-input"
+              placeholder="ex: 15000.00"
+              value={productForm.price}
+              onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+              required
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <button type="button" onClick={() => setIsProductModalOpen(false)} className="btn btn-secondary">Cancelar</button>
+            <button type="submit" className="btn btn-emerald">Confirmar Venda</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* MODAL 3: Editar Comissões */}
+      <Modal isOpen={isCommissionModalOpen} onClose={() => setIsCommissionModalOpen(false)} title="Configurar Comissões & Metas">
+        <form onSubmit={handleCommissionSubmit}>
+          <div className="form-group">
+            <label className="form-label">Taxa de Comissão (% sobre Receita PJ)</label>
+            <input
+              type="number"
+              step="0.1"
+              className="form-input"
+              value={commissionForm.rate}
+              onChange={(e) => setCommissionForm({ ...commissionForm, rate: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Meta de Comissão Mensal (R$)</label>
+            <input
+              type="number"
+              step="100"
+              className="form-input"
+              value={commissionForm.target}
+              onChange={(e) => setCommissionForm({ ...commissionForm, target: e.target.value })}
+              required
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+            <button type="button" onClick={() => setIsCommissionModalOpen(false)} className="btn btn-secondary">Cancelar</button>
+            <button type="submit" className="btn btn-primary">Salvar Comissões</button>
+          </div>
+        </form>
+      </Modal>
 
     </div>
   );

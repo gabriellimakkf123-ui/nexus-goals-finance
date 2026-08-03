@@ -11,6 +11,8 @@ import { DatabaseSettingsModal } from './components/Settings/DatabaseSettingsMod
 
 const MainLayout = () => {
   const { activeTab } = useApp();
+
+  // Modais globais (abertos APENAS quando o usuário clica expressamente em um botão "+")
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
@@ -37,6 +39,7 @@ const MainLayout = () => {
             onOpenGoalModal={() => setIsGoalModalOpen(true)}
             onOpenTxModal={() => setIsTxModalOpen(true)}
             onOpenClientModal={() => setIsClientModalOpen(true)}
+            onOpenCalendarModal={() => setIsCalendarModalOpen(true)}
           />
         )}
 
