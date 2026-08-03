@@ -10,7 +10,7 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
     dashboard: 'Visão Geral & Dashboard 360°',
     metas: 'Metas Pessoais & Empresariais',
     financas: 'Gestão Financeira (PF / PJ)',
-    clientes: 'CRM & Pipeline de Clientes'
+    clientes: 'CRM Dual de Clientes (PF / PJ)'
   };
 
   return (
@@ -24,7 +24,7 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
     }}>
       <div>
         <h2 style={{ fontSize: '1.65rem', fontWeight: 700, color: 'white' }}>
-          {titles[activeTab] || 'Nexus System'}
+          {titles[activeTab] || 'Vertex Digital'}
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
           <Calendar size={14} color="var(--accent-cyan)" />
@@ -52,7 +52,7 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
 
         {activeTab === 'clientes' && (
           <button onClick={onOpenClientModal} className="btn btn-emerald">
-            <Plus size={18} /> Novo Cliente
+            <Plus size={18} /> Novo Cliente / Contato
           </button>
         )}
 
@@ -65,7 +65,7 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
               <Plus size={16} /> Lançamento
             </button>
             <button onClick={onOpenClientModal} className="btn btn-emerald" style={{ padding: '0.55rem 0.9rem', fontSize: '0.8rem' }}>
-              <Plus size={16} /> Cliente
+              <Plus size={16} /> CRM
             </button>
           </>
         )}

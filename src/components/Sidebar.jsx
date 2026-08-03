@@ -9,7 +9,7 @@ export const Sidebar = () => {
     { id: 'dashboard', label: 'Dashboard 360°', icon: LayoutDashboard },
     { id: 'metas', label: 'Metas (PF & PJ)', icon: Target },
     { id: 'financas', label: 'Finanças (PF & PJ)', icon: Wallet },
-    { id: 'clientes', label: 'CRM de Clientes', icon: Users },
+    { id: 'clientes', label: 'CRM Dual (PF & PJ)', icon: Users },
   ];
 
   return (
@@ -20,31 +20,31 @@ export const Sidebar = () => {
       display: 'flex',
       flexDirection: 'column',
       padding: '1.5rem 1rem',
-      justifyByContent: 'space-between',
+      justifyContent: 'space-between',
       flexShrink: 0
     }}>
       {/* Brand Header */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 0.5rem 1.75rem 0.5rem', borderBottom: '1px solid var(--bg-glass-border)' }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: '42px',
+            height: '42px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, var(--accent-purple), var(--accent-cyan))',
+            background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            boxShadow: '0 4px 14px var(--accent-purple-glow)'
+            boxShadow: '0 4px 14px var(--accent-cyan-glow)'
           }}>
-            <Zap size={22} />
+            <Zap size={24} />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.25rem', fontWeight: 800, background: 'linear-gradient(90deg, #fff, var(--text-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              NEXUS
+            <h1 style={{ fontSize: '1.2rem', fontWeight: 800, background: 'linear-gradient(90deg, #fff, var(--accent-cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.03em' }}>
+              VERTEX
             </h1>
-            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.05em' }}>
-              GOALS & FINANCE
+            <span style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              DIGITAL SYSTEM
             </span>
           </div>
         </div>
@@ -65,7 +65,7 @@ export const Sidebar = () => {
                   padding: '0.75rem 1rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(90deg, rgba(157, 78, 221, 0.2), rgba(6, 182, 212, 0.1))' : 'transparent',
+                  background: isActive ? 'linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(157, 78, 221, 0.1))' : 'transparent',
                   color: isActive ? 'white' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
                   fontSize: '0.9rem',

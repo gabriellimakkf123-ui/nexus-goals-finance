@@ -5,35 +5,35 @@ import confetti from 'canvas-confetti';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Inicialização com LocalStorage ou dados iniciais
+  // Inicialização com LocalStorage ou dados iniciais (com suporte a fallback retrocompatível)
   const [goals, setGoals] = useState(() => {
-    const saved = localStorage.getItem('nexus_goals');
+    const saved = localStorage.getItem('vertex_goals') || localStorage.getItem('nexus_goals');
     return saved ? JSON.parse(saved) : INITIAL_GOALS;
   });
 
   const [transactions, setTransactions] = useState(() => {
-    const saved = localStorage.getItem('nexus_transactions');
+    const saved = localStorage.getItem('vertex_transactions') || localStorage.getItem('nexus_transactions');
     return saved ? JSON.parse(saved) : INITIAL_TRANSACTIONS;
   });
 
   const [clients, setClients] = useState(() => {
-    const saved = localStorage.getItem('nexus_clients');
+    const saved = localStorage.getItem('vertex_clients') || localStorage.getItem('nexus_clients');
     return saved ? JSON.parse(saved) : INITIAL_CLIENTS;
   });
 
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'metas', 'financas', 'clientes'
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Efeito para salvar no LocalStorage
+  // Efeito para salvar no LocalStorage do Vertex Digital
   useEffect(() => {
-    localStorage.setItem('nexus_goals', JSON.stringify(goals));
+    localStorage.setItem('vertex_goals', JSON.stringify(goals));
   }, [goals]);
 
   useEffect(() => {
-    localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
+    localStorage.setItem('vertex_transactions', JSON.stringify(transactions));
   }, [transactions]);
 
   useEffect(() => {
-    localStorage.setItem('nexus_clients', JSON.stringify(clients));
+    localStorage.setItem('vertex_clients', JSON.stringify(clients));
   }, [clients]);
 
   // Função para lançar confetes de comemoração
@@ -90,7 +90,6 @@ export const AppProvider = ({ children }) => {
   const addTransaction = (newTx) => {
     setTransactions((prev) => [newTx, ...prev]);
 
-    // Atualizar metas automaticamente se for uma receita
     if (newTx.type === 'receita') {
       const targetCategory = newTx.account === 'pessoal' ? 'pessoal' : 'empresarial';
       setGoals((prevGoals) =>
@@ -115,7 +114,7 @@ export const AppProvider = ({ children }) => {
     setTransactions((prev) => prev.filter((t) => t.id !== txId));
   };
 
-  // Registro de Pró-Labore (Registra saída na Empresa e Entrada no Pessoal)
+  // Registro de Pró-Labore (Transferência PJ ➔ PF)
   const addProlaboreTransfer = (amount, date) => {
     const numVal = parseFloat(amount);
     const txPJ = {
@@ -172,7 +171,6 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  // Lançar cobrança/receita vinda de um Cliente (direcionada para a conta PF ou PJ correspondente)
   const generateClientPayment = (client) => {
     const isPessoal = client.category === 'pessoal';
     const tx = {
@@ -180,7 +178,7 @@ export const AppProvider = ({ children }) => {
       description: `Pagamento ${client.contractType === 'mensalidade' ? 'Mensal' : 'Projeto'} - ${client.name}`,
       amount: client.value,
       type: 'receita',
-      account: isPessoal ? 'pessoal' : 'empresa', // Direciona para PF ou PJ!
+      account: isPessoal ? 'pessoal' : 'empresa',
       category: client.contractType === 'mensalidade' ? 'Contrato Recorrente' : 'Projeto Pontual',
       date: new Date().toISOString().split('T')[0],
       recurring: client.contractType === 'mensalidade',
@@ -190,15 +188,15 @@ export const AppProvider = ({ children }) => {
     triggerCelebration();
   };
 
-  // Backup & Restauração
+  // Backup & Restauração Vertex Digital
   const exportData = () => {
-    const data = { goals, transactions, clients, version: '1.0' };
+    const data = { goals, transactions, clients, system: 'Vertex Digital', version: '2.0' };
     const jsonStr = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `nexus_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `vertex_digital_backup_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
   };
 
@@ -208,14 +206,14 @@ export const AppProvider = ({ children }) => {
       if (parsed.goals) setGoals(parsed.goals);
       if (parsed.transactions) setTransactions(parsed.transactions);
       if (parsed.clients) setClients(parsed.clients);
-      alert('Dados importados com sucesso!');
+      alert('Dados importados no Vertex Digital com sucesso!');
     } catch (e) {
-      alert('Erro ao importar dados. Verifique o formato do arquivo.');
+      alert('Erro ao importar dados. Verifique o arquivo.');
     }
   };
 
   const resetToSampleData = () => {
-    if (confirm('Deseja restaurar os dados de demonstração originais com os CRMs PF e PJ?')) {
+    if (confirm('Deseja restaurar os dados de demonstração originais do Vertex Digital?')) {
       setGoals(INITIAL_GOALS);
       setTransactions(INITIAL_TRANSACTIONS);
       setClients(INITIAL_CLIENTS);
