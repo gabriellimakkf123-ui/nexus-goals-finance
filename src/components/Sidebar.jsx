@@ -2,6 +2,7 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
 import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Download, RefreshCw, Database } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
 export const Sidebar = ({ onOpenDbModal }) => {
   const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
@@ -26,7 +27,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
       justifyContent: 'space-between',
       flexShrink: 0
     }}>
-      {/* Brand Header com Logo Oficial */}
+      {/* Brand Header com Logo Importado Oficial */}
       <div>
         <div style={{
           padding: '0.5rem 0.5rem 1.5rem 0.5rem',
@@ -36,13 +37,13 @@ export const Sidebar = ({ onOpenDbModal }) => {
           alignItems: 'center'
         }}>
           <img
-            src="/logo.png"
+            src={logoImg}
             alt="Vertex Digital"
             style={{
-              maxHeight: '48px',
+              maxHeight: '52px',
               maxWidth: '100%',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 4px 12px rgba(220, 38, 38, 0.25))'
+              filter: 'drop-shadow(0 4px 12px rgba(37, 99, 235, 0.3))'
             }}
           />
         </div>
