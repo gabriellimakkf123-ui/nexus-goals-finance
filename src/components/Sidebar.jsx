@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
-import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Zap, Download, RefreshCw, Database } from 'lucide-react';
+import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Download, RefreshCw, Database } from 'lucide-react';
 
 export const Sidebar = ({ onOpenDbModal }) => {
   const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
@@ -26,30 +26,25 @@ export const Sidebar = ({ onOpenDbModal }) => {
       justifyContent: 'space-between',
       flexShrink: 0
     }}>
-      {/* Brand Header */}
+      {/* Brand Header com Logo Oficial */}
       <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0 0.5rem 1.75rem 0.5rem', borderBottom: '1px solid var(--bg-glass-border)' }}>
-          <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, var(--accent-cyan), var(--accent-purple))',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            boxShadow: '0 4px 14px var(--accent-cyan-glow)'
-          }}>
-            <Zap size={24} />
-          </div>
-          <div>
-            <h1 style={{ fontSize: '1.2rem', fontWeight: 800, background: 'linear-gradient(90deg, #fff, var(--accent-cyan))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.03em' }}>
-              VERTEX
-            </h1>
-            <span style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              DIGITAL SYSTEM
-            </span>
-          </div>
+        <div style={{
+          padding: '0.5rem 0.5rem 1.5rem 0.5rem',
+          borderBottom: '1px solid var(--bg-glass-border)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <img
+            src="/logo.png"
+            alt="Vertex Digital"
+            style={{
+              maxHeight: '48px',
+              maxWidth: '100%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 4px 12px rgba(220, 38, 38, 0.25))'
+            }}
+          />
         </div>
 
         {/* Navigation Links */}
@@ -68,17 +63,17 @@ export const Sidebar = ({ onOpenDbModal }) => {
                   padding: '0.75rem 1rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(90deg, rgba(6, 182, 212, 0.2), rgba(157, 78, 221, 0.1))' : 'transparent',
+                  background: isActive ? 'linear-gradient(90deg, rgba(37, 99, 235, 0.25), rgba(220, 38, 38, 0.15))' : 'transparent',
                   color: isActive ? 'white' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
                   fontSize: '0.9rem',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.2s ease',
-                  borderLeft: isActive ? '3px solid var(--accent-cyan)' : '3px solid transparent'
+                  borderLeft: isActive ? '3px solid #2563EB' : '3px solid transparent'
                 }}
               >
-                <Icon size={20} color={isActive ? 'var(--accent-cyan)' : 'currentColor'} />
+                <Icon size={20} color={isActive ? '#2563EB' : 'currentColor'} />
                 <span>{item.label}</span>
               </button>
             );
