@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
 import {
   LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
-  Download, RefreshCw, Database, Moon
+  Download, RefreshCw, Database, Moon, Sun
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 export const Sidebar = ({ onOpenDbModal }) => {
-  const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
+  const { activeTab, setActiveTab, exportData, resetToSampleData, darkMode, toggleDarkMode } = useApp();
   const isDbConnected = isDatabaseConnected();
-  const [darkMode, setDarkMode] = useState(true);
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,7 +31,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Vertex Digital em Tamanho Gigante & Destaque Máximo */}
+        {/* Logo Vertex Digital */}
         <div style={{
           padding: '0.25rem 0.25rem 1.25rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
@@ -72,8 +71,8 @@ export const Sidebar = ({ onOpenDbModal }) => {
                   padding: '0.75rem 0.95rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
-                  background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                  color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
+                  background: isActive ? 'rgba(220, 38, 38, 0.15)' : 'transparent',
+                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
                   fontSize: '0.88rem',
                   cursor: 'pointer',
@@ -99,7 +98,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
           className="btn btn-secondary"
           style={{
             width: '100%',
-            justifyContent: 'flex-start',
+            justify: 'flex-start',
             fontSize: '0.78rem',
             borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)',
             color: isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'
@@ -116,29 +115,33 @@ export const Sidebar = ({ onOpenDbModal }) => {
           <Download size={15} /> Backup JSON
         </button>
 
-        {/* Toggle Modo Escuro */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0.5rem 0.75rem',
-          background: 'rgba(255, 255, 255, 0.04)',
-          borderRadius: 'var(--radius-sm)',
-          fontSize: '0.8rem',
-          color: 'var(--text-secondary)'
-        }}>
+        {/* Toggle Modo Escuro / Claro Conectado ao AppContext */}
+        <div
+          onClick={toggleDarkMode}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0.55rem 0.75rem',
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '0.8rem',
+            color: 'var(--text-secondary)',
+            cursor: 'pointer',
+            border: '1px solid var(--bg-glass-border)'
+          }}
+        >
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Moon size={15} color="var(--text-muted)" /> Modo Escuro
+            {darkMode ? <Moon size={15} color="#DC2626" /> : <Sun size={15} color="#F59E0B" />}
+            {darkMode ? 'Modo Escuro' : 'Modo Claro'}
           </span>
           <div
-            onClick={() => setDarkMode(!darkMode)}
             style={{
               width: '38px',
               height: '20px',
               borderRadius: '100px',
-              background: darkMode ? '#DC2626' : 'rgba(255, 255, 255, 0.2)',
+              background: darkMode ? '#DC2626' : 'rgba(0, 0, 0, 0.15)',
               position: 'relative',
-              cursor: 'pointer',
               transition: 'background 0.2s ease'
             }}
           >
