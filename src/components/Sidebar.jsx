@@ -1,12 +1,13 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { LayoutDashboard, Target, Wallet, Users, Zap, Download, RefreshCw } from 'lucide-react';
+import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Zap, Download, RefreshCw } from 'lucide-react';
 
 export const Sidebar = () => {
   const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard 360°', icon: LayoutDashboard },
+    { id: 'agenda', label: 'Agenda & Calendário', icon: CalendarIcon },
     { id: 'metas', label: 'Metas (PF & PJ)', icon: Target },
     { id: 'financas', label: 'Finanças (PF & PJ)', icon: Wallet },
     { id: 'clientes', label: 'CRM Dual (PF & PJ)', icon: Users },

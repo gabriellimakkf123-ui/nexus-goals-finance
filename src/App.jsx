@@ -3,6 +3,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './components/Dashboard/DashboardView';
+import { CalendarView } from './components/Calendar/CalendarView';
 import { GoalsView } from './components/Goals/GoalsView';
 import { FinanceView } from './components/Finance/FinanceView';
 import { ClientsView } from './components/Clients/ClientsView';
@@ -13,6 +14,7 @@ const MainLayout = () => {
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isProlaboreModalOpen, setIsProlaboreModalOpen] = useState(false);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
   return (
     <div className="app-container">
@@ -24,6 +26,7 @@ const MainLayout = () => {
           onOpenTxModal={() => setIsTxModalOpen(true)}
           onOpenClientModal={() => setIsClientModalOpen(true)}
           onOpenProlaboreModal={() => setIsProlaboreModalOpen(true)}
+          onOpenCalendarModal={() => setIsCalendarModalOpen(true)}
         />
 
         {activeTab === 'dashboard' && (
@@ -31,6 +34,13 @@ const MainLayout = () => {
             onOpenGoalModal={() => setIsGoalModalOpen(true)}
             onOpenTxModal={() => setIsTxModalOpen(true)}
             onOpenClientModal={() => setIsClientModalOpen(true)}
+          />
+        )}
+
+        {activeTab === 'agenda' && (
+          <CalendarView
+            isModalOpen={isCalendarModalOpen}
+            setIsModalOpen={setIsCalendarModalOpen}
           />
         )}
 

@@ -145,14 +145,13 @@ export const INITIAL_TRANSACTIONS = [
 ];
 
 export const INITIAL_CLIENTS = [
-  // --- CLIENTES EMPRESARIAIS (PJ) ---
   {
     id: 'c1',
     name: 'TechCorp Soluções',
     contactPerson: 'Carlos Eduardo',
     email: 'carlos@techcorp.com.br',
     phone: '(11) 98765-4321',
-    category: 'empresa', // PJ
+    category: 'empresa',
     status: 'fechado',
     contractType: 'mensalidade',
     value: 5500,
@@ -165,7 +164,7 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Dra. Vanessa',
     email: 'vanessa@odontoclinika.com',
     phone: '(11) 97123-8899',
-    category: 'empresa', // PJ
+    category: 'empresa',
     status: 'fechado',
     contractType: 'mensalidade',
     value: 3200,
@@ -178,7 +177,7 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Fernanda Lima',
     email: 'fernanda@vanguarda.com',
     phone: '(21) 99887-1122',
-    category: 'empresa', // PJ
+    category: 'empresa',
     status: 'fechado',
     contractType: 'projeto_pontual',
     value: 9600,
@@ -191,7 +190,7 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Roberto Mendes',
     email: 'roberto@logexpress.com.br',
     phone: '(31) 98444-5566',
-    category: 'empresa', // PJ
+    category: 'empresa',
     status: 'proposta',
     contractType: 'mensalidade',
     value: 4200,
@@ -204,22 +203,20 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Juliana Paes',
     email: 'juliana@gourmet.com',
     phone: '(11) 96555-4433',
-    category: 'empresa', // PJ
+    category: 'empresa',
     status: 'prospeccao',
     contractType: 'projeto_pontual',
     value: 6500,
     notes: 'Reunião inicial agendada.',
     tags: ['Alimentação']
   },
-
-  // --- CLIENTES & OPORTUNIDADES PESSOAIS (PF) ---
   {
     id: 'cpf1',
     name: 'Mentoria Individual de Carreira - Lucas Gabriel',
     contactPerson: 'Lucas Gabriel',
     email: 'lucas.gabriel@email.com',
     phone: '(11) 99111-2233',
-    category: 'pessoal', // PF
+    category: 'pessoal',
     status: 'fechado',
     contractType: 'mensalidade',
     value: 1200,
@@ -232,38 +229,56 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Matheus Oliveira',
     email: 'matheus@email.com',
     phone: '(11) 98222-4455',
-    category: 'pessoal', // PF
+    category: 'pessoal',
     status: 'fechado',
     contractType: 'projeto_pontual',
     value: 4500,
     notes: 'Venda pessoal parcelada em 2x.',
     tags: ['Desapego', 'Venda PF']
+  }
+];
+
+export const INITIAL_EVENTS = [
+  {
+    id: 'ev1',
+    title: 'Reunião de Alinhamento de Escopo (TechCorp)',
+    category: 'empresa',
+    date: '2026-08-04',
+    startTime: '10:00',
+    endTime: '11:00',
+    location: 'Google Meet',
+    notes: 'Apresentar protótipo das novas telas do painel administrativo.',
+    relatedClient: 'TechCorp Soluções'
   },
   {
-    id: 'cpf3',
-    name: 'Freelance Pessoal - Blog para Amigo (Dr. Bruno)',
-    contactPerson: 'Bruno Ramos',
-    email: 'bruno@email.com',
-    phone: '(21) 97333-6677',
-    category: 'pessoal', // PF
-    status: 'proposta',
-    contractType: 'projeto_pontual',
-    value: 2500,
-    notes: 'Criação de blog pessoal médico.',
-    tags: ['Freela PF']
+    id: 'ev2',
+    title: 'Consulta Médica de Rotina (Check-up)',
+    category: 'pessoal',
+    date: '2026-08-05',
+    startTime: '14:30',
+    endTime: '15:30',
+    location: 'Hospital Albert Einstein - Unidade Morumbi',
+    notes: 'Levar exames de sangue anteriores.'
   },
   {
-    id: 'cpf4',
-    name: 'Consultoria Financeira Pessoal com Amigos',
-    contactPerson: 'Camila & Pedro',
-    email: 'camila@email.com',
-    phone: '(11) 96444-8899',
-    category: 'pessoal', // PF
-    status: 'prospeccao',
-    contractType: 'projeto_pontual',
-    value: 800,
-    notes: 'Conversa informal para organizar planejamento financeiro de casal.',
-    tags: ['Networking']
+    id: 'ev3',
+    title: 'Apresentação de Proposta Comercial - Logística Express',
+    category: 'empresa',
+    date: '2026-08-07',
+    startTime: '16:00',
+    endTime: '17:00',
+    location: 'Zoom Meetings',
+    notes: 'Definir valores finais do contrato de mensalidade.'
+  },
+  {
+    id: 'ev4',
+    title: 'Sessão de Mentoria com Lucas (PF)',
+    category: 'pessoal',
+    date: '2026-08-10',
+    startTime: '19:00',
+    endTime: '20:00',
+    location: 'Discord Channel',
+    notes: 'Revisão de código em React & Node.js.'
   }
 ];
 

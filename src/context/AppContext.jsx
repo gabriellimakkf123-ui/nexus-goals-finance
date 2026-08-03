@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { INITIAL_GOALS, INITIAL_TRANSACTIONS, INITIAL_CLIENTS } from '../utils/initialData';
+import { INITIAL_GOALS, INITIAL_TRANSACTIONS, INITIAL_CLIENTS, INITIAL_EVENTS } from '../utils/initialData';
 import confetti from 'canvas-confetti';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Inicialização com LocalStorage ou dados iniciais (com suporte a fallback retrocompatível)
+  // Inicialização com LocalStorage ou dados iniciais
   const [goals, setGoals] = useState(() => {
     const saved = localStorage.getItem('vertex_goals') || localStorage.getItem('nexus_goals');
     return saved ? JSON.parse(saved) : INITIAL_GOALS;
@@ -21,9 +21,14 @@ export const AppProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : INITIAL_CLIENTS;
   });
 
+  const [events, setEvents] = useState(() => {
+    const saved = localStorage.getItem('vertex_events');
+    return saved ? JSON.parse(saved) : INITIAL_EVENTS;
+  });
+
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Efeito para salvar no LocalStorage do Vertex Digital
+  // Salvando no LocalStorage do Vertex Digital
   useEffect(() => {
     localStorage.setItem('vertex_goals', JSON.stringify(goals));
   }, [goals]);
@@ -36,7 +41,10 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('vertex_clients', JSON.stringify(clients));
   }, [clients]);
 
-  // Função para lançar confetes de comemoração
+  useEffect(() => {
+    localStorage.setItem('vertex_events', JSON.stringify(events));
+  }, [events]);
+
   const triggerCelebration = () => {
     try {
       confetti({
@@ -114,7 +122,6 @@ export const AppProvider = ({ children }) => {
     setTransactions((prev) => prev.filter((t) => t.id !== txId));
   };
 
-  // Registro de Pró-Labore (Transferência PJ ➔ PF)
   const addProlaboreTransfer = (amount, date) => {
     const numVal = parseFloat(amount);
     const txPJ = {
@@ -188,9 +195,24 @@ export const AppProvider = ({ children }) => {
     triggerCelebration();
   };
 
-  // Backup & Restauração Vertex Digital
+  // --- Ações de Agenda & Calendário ---
+  const addEvent = (newEvent) => {
+    setEvents((prev) => [newEvent, ...prev]);
+  };
+
+  const updateEvent = (updatedEvent) => {
+    setEvents((prev) =>
+      prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
+    );
+  };
+
+  const deleteEvent = (eventId) => {
+    setEvents((prev) => prev.filter((e) => e.id !== eventId));
+  };
+
+  // Backup & Restauração
   const exportData = () => {
-    const data = { goals, transactions, clients, system: 'Vertex Digital', version: '2.0' };
+    const data = { goals, transactions, clients, events, system: 'Vertex Digital', version: '2.0' };
     const jsonStr = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -206,17 +228,19 @@ export const AppProvider = ({ children }) => {
       if (parsed.goals) setGoals(parsed.goals);
       if (parsed.transactions) setTransactions(parsed.transactions);
       if (parsed.clients) setClients(parsed.clients);
+      if (parsed.events) setEvents(parsed.events);
       alert('Dados importados no Vertex Digital com sucesso!');
     } catch (e) {
-      alert('Erro ao importar dados. Verifique o arquivo.');
+      alert('Erro ao importar dados.');
     }
   };
 
   const resetToSampleData = () => {
-    if (confirm('Deseja restaurar os dados de demonstração originais do Vertex Digital?')) {
+    if (confirm('Deseja restaurar os dados de demonstração do Vertex Digital?')) {
       setGoals(INITIAL_GOALS);
       setTransactions(INITIAL_TRANSACTIONS);
       setClients(INITIAL_CLIENTS);
+      setEvents(INITIAL_EVENTS);
     }
   };
 
@@ -238,6 +262,10 @@ export const AppProvider = ({ children }) => {
         deleteClient,
         moveClientStage,
         generateClientPayment,
+        events,
+        addEvent,
+        updateEvent,
+        deleteEvent,
         activeTab,
         setActiveTab,
         exportData,

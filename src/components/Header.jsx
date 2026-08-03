@@ -3,11 +3,12 @@ import { useApp } from '../context/AppContext';
 import { getCurrentMonthYear } from '../utils/formatters';
 import { Plus, ArrowRightLeft, Calendar } from 'lucide-react';
 
-export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenProlaboreModal }) => {
+export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenProlaboreModal, onOpenCalendarModal }) => {
   const { activeTab } = useApp();
 
   const titles = {
     dashboard: 'Visão Geral & Dashboard 360°',
+    agenda: 'Agenda & Calendário Interativo (PF / PJ)',
     metas: 'Metas Pessoais & Empresariais',
     financas: 'Gestão Financeira (PF / PJ)',
     clientes: 'CRM Dual de Clientes (PF / PJ)'
@@ -38,6 +39,12 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
           <ArrowRightLeft size={16} color="var(--accent-amber)" /> Retirar Pró-Labore
         </button>
 
+        {activeTab === 'agenda' && (
+          <button onClick={onOpenCalendarModal} className="btn btn-cyan">
+            <Plus size={18} /> Novo Agendamento
+          </button>
+        )}
+
         {activeTab === 'metas' && (
           <button onClick={onOpenGoalModal} className="btn btn-primary">
             <Plus size={18} /> Nova Meta
@@ -58,6 +65,9 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
 
         {activeTab === 'dashboard' && (
           <>
+            <button onClick={onOpenCalendarModal} className="btn btn-secondary" style={{ padding: '0.55rem 0.9rem', fontSize: '0.8rem' }}>
+              <Plus size={16} /> Agendar
+            </button>
             <button onClick={onOpenGoalModal} className="btn btn-primary" style={{ padding: '0.55rem 0.9rem', fontSize: '0.8rem' }}>
               <Plus size={16} /> Meta
             </button>
