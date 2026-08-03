@@ -18,19 +18,19 @@ export const Sidebar = ({ onOpenDbModal }) => {
 
   return (
     <aside style={{
-      width: '260px',
+      width: '270px',
       background: 'var(--bg-card)',
       borderRight: '1px solid var(--bg-glass-border)',
       display: 'flex',
       flexDirection: 'column',
-      padding: '1.5rem 1rem',
+      padding: '1.75rem 1.1rem',
       justifyContent: 'space-between',
       flexShrink: 0
     }}>
-      {/* Brand Header com Logo Importado Oficial */}
+      {/* Brand Header com Logo em Destaque Expandido */}
       <div>
         <div style={{
-          padding: '0.5rem 0.5rem 1.5rem 0.5rem',
+          padding: '0.5rem 0.25rem 1.75rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
           justifyContent: 'center',
@@ -40,16 +40,17 @@ export const Sidebar = ({ onOpenDbModal }) => {
             src={logoImg}
             alt="Vertex Digital"
             style={{
-              maxHeight: '52px',
+              height: '80px',
+              width: 'auto',
               maxWidth: '100%',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 4px 12px rgba(37, 99, 235, 0.3))'
+              filter: 'drop-shadow(0 6px 16px rgba(220, 38, 38, 0.4))'
             }}
           />
         </div>
 
         {/* Navigation Links */}
-        <nav style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <nav style={{ marginTop: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -61,20 +62,20 @@ export const Sidebar = ({ onOpenDbModal }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.85rem',
-                  padding: '0.75rem 1rem',
+                  padding: '0.8rem 1rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(90deg, rgba(37, 99, 235, 0.25), rgba(220, 38, 38, 0.15))' : 'transparent',
+                  background: isActive ? 'linear-gradient(90deg, rgba(220, 38, 38, 0.25), rgba(37, 99, 235, 0.15))' : 'transparent',
                   color: isActive ? 'white' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
-                  fontSize: '0.9rem',
+                  fontSize: '0.92rem',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.2s ease',
-                  borderLeft: isActive ? '3px solid #2563EB' : '3px solid transparent'
+                  borderLeft: isActive ? '3px solid #DC2626' : '3px solid transparent'
                 }}
               >
-                <Icon size={20} color={isActive ? '#2563EB' : 'currentColor'} />
+                <Icon size={20} color={isActive ? '#DC2626' : 'currentColor'} />
                 <span>{item.label}</span>
               </button>
             );

@@ -1,29 +1,33 @@
 :root {
-  /* Paleta Oficial do Cliente */
-  --bg-dark: #0F172A; /* Azul Escuro */
-  --bg-card: #1E293B; /* Azul Slate Escuro para Cards */
+  /* Paleta Baseada nas Cores da Logo Oficial da Vertex Digital */
+  --bg-dark: #0F172A; /* Slate Grafite Escuro */
+  --bg-card: #1E293B; /* Metallic Dark Slate */
   --bg-card-hover: #334155;
-  --bg-glass: rgba(15, 23, 42, 0.9);
-  --bg-glass-border: rgba(255, 255, 255, 0.15);
+  --bg-glass: rgba(15, 23, 42, 0.92);
+  --bg-glass-border: rgba(255, 255, 255, 0.12);
 
-  --text-primary: #FFFFFF; /* Branco */
+  --text-primary: #FFFFFF; /* Prata Metálico / Branco */
   --text-secondary: #CBD5E1;
   --text-muted: #94A3B8;
 
-  /* Azul Neon & Destaques */
-  --accent-cyan: #2563EB; /* Azul Neon */
-  --accent-cyan-glow: rgba(37, 99, 235, 0.4);
+  /* Cores de Destaque Extraídas da Logo */
+  --accent-red: #DC2626; /* Vermelho Vertex Logo */
+  --accent-red-bright: #EF4444;
+  --accent-red-glow: rgba(220, 38, 38, 0.4);
   
-  --accent-purple: #3B82F6; /* Azul Neon Claro */
-  --accent-purple-glow: rgba(59, 130, 246, 0.35);
+  --accent-cyan: #DC2626; /* Cor Primária Vermelho Vertex */
+  --accent-cyan-glow: rgba(220, 38, 38, 0.4);
+  
+  --accent-purple: #2563EB; /* Azul Secundário para contraste PF */
+  --accent-purple-glow: rgba(37, 99, 235, 0.35);
   
   --accent-emerald: #10B981;
   --accent-amber: #F59E0B;
   --accent-rose: #EF4444;
 
-  /* Distinção Pessoal vs Empresa no Tema Azul Neon */
-  --color-pessoal: #60A5FA;
-  --color-empresa: #2563EB;
+  /* Distinção Pessoal vs Empresa alinhada ao Logo */
+  --color-pessoal: #60A5FA; /* Azul Metálico para PF */
+  --color-empresa: #EF4444; /* Vermelho Vertex para PJ */
 
   /* Tipografia */
   --font-heading: 'Outfit', sans-serif;
@@ -34,8 +38,8 @@
   --radius-md: 14px;
   --radius-lg: 20px;
   --radius-xl: 24px;
-  --shadow-glow: 0 8px 32px 0 rgba(37, 99, 235, 0.25);
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 8px 32px 0 rgba(220, 38, 38, 0.25);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -52,8 +56,8 @@ body {
   overflow-x: hidden;
   line-height: 1.5;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.15) 0%, transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.12) 0%, transparent 45%);
+    radial-gradient(circle at 15% 15%, rgba(220, 38, 38, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.12) 0%, transparent 45%);
   background-attachment: fixed;
 }
 
@@ -77,11 +81,11 @@ button, input, select, textarea {
   background: #0F172A;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(37, 99, 235, 0.4);
+  background: rgba(220, 38, 38, 0.4);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563EB;
+  background: #DC2626;
 }
 
 /* Estrutura Principal */
@@ -118,9 +122,9 @@ button, input, select, textarea {
 }
 
 .glass-card:hover {
-  border-color: rgba(37, 99, 235, 0.5);
+  border-color: rgba(220, 38, 38, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.2);
 }
 
 /* Badges de Identificação */
@@ -143,9 +147,9 @@ button, input, select, textarea {
 }
 
 .badge-empresa {
-  background: rgba(37, 99, 235, 0.2);
-  color: #60A5FA;
-  border: 1px solid rgba(37, 99, 235, 0.5);
+  background: rgba(220, 38, 38, 0.2);
+  color: #F87171;
+  border: 1px solid rgba(220, 38, 38, 0.5);
 }
 
 .badge-recorrente {
@@ -175,7 +179,7 @@ button, input, select, textarea {
   color: var(--accent-rose);
 }
 
-/* Botões com Azul Neon e Gradientes */
+/* Botões com Vermelho Vertex e Gradientes */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -191,23 +195,23 @@ button, input, select, textarea {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  background: linear-gradient(135deg, #DC2626, #B91C1C);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px var(--accent-cyan-glow);
+  box-shadow: 0 4px 14px var(--accent-red-glow);
 }
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
 }
 
 .btn-cyan {
-  background: linear-gradient(135deg, #2563EB, #3B82F6);
+  background: linear-gradient(135deg, #DC2626, #EF4444);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px var(--accent-cyan-glow);
+  box-shadow: 0 4px 14px var(--accent-red-glow);
 }
 .btn-cyan:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5);
 }
 
 .btn-emerald {
@@ -226,8 +230,8 @@ button, input, select, textarea {
   border: 1px solid var(--bg-glass-border);
 }
 .btn-secondary:hover {
-  background: rgba(37, 99, 235, 0.2);
-  border-color: #2563EB;
+  background: rgba(220, 38, 38, 0.2);
+  border-color: #DC2626;
 }
 
 .btn-icon {
@@ -239,12 +243,12 @@ button, input, select, textarea {
   cursor: pointer;
 }
 .btn-icon:hover {
-  background: rgba(37, 99, 235, 0.2);
+  background: rgba(220, 38, 38, 0.2);
   color: #FFFFFF;
-  border-color: #2563EB;
+  border-color: #DC2626;
 }
 
-/* Barra de Progresso com Azul Neon */
+/* Barra de Progresso com Vermelho Vertex */
 .progress-bar-bg {
   width: 100%;
   height: 8px;
@@ -257,7 +261,7 @@ button, input, select, textarea {
   height: 100%;
   border-radius: 100px;
   transition: width 0.4s ease;
-  background: linear-gradient(90deg, #2563EB, #60A5FA);
+  background: linear-gradient(90deg, #DC2626, #EF4444);
 }
 
 /* Formulários */
@@ -289,8 +293,8 @@ button, input, select, textarea {
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
-  border-color: #2563EB;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  border-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
 }
 
 /* Estilo do Quadro Kanban */
@@ -304,7 +308,7 @@ button, input, select, textarea {
 
 .kanban-column {
   flex: 0 0 310px;
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(30, 41, 59, 0.85);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-md);
   display: flex;
@@ -336,7 +340,7 @@ button, input, select, textarea {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
