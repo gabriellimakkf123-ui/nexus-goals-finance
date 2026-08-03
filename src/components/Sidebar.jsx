@@ -22,7 +22,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
 
   return (
     <aside style={{
-      width: '260px',
+      width: '270px',
       background: 'var(--bg-sidebar)',
       borderRight: '1px solid var(--bg-glass-border)',
       display: 'flex',
@@ -32,25 +32,26 @@ export const Sidebar = ({ onOpenDbModal }) => {
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Vertex Digital Proporcional e Nítido */}
+        {/* Logo Vertex Digital em Tamanho Gigante & Destaque Máximo */}
         <div style={{
-          padding: '0.5rem 0.5rem 1.5rem 0.5rem',
+          padding: '0.25rem 0.25rem 1.25rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
           alignItems: 'center',
+          height: '90px',
           overflow: 'hidden'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital"
             style={{
-              height: '62px',
+              height: '100%',
               width: 'auto',
-              maxWidth: '210px',
+              maxWidth: '260px',
               objectFit: 'contain',
-              transform: 'scale(1.4)',
+              transform: 'scale(2.2)',
               transformOrigin: 'left center',
-              filter: 'drop-shadow(0 4px 12px rgba(220, 38, 38, 0.4))'
+              filter: 'drop-shadow(0 6px 16px rgba(220, 38, 38, 0.45))'
             }}
           />
         </div>
@@ -98,7 +99,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
           className="btn btn-secondary"
           style={{
             width: '100%',
-            justify: 'flex-start',
+            justifyContent: 'flex-start',
             fontSize: '0.78rem',
             borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)',
             color: isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'
