@@ -58,7 +58,6 @@ export const AppProvider = ({ children }) => {
     setGoals((prev) =>
       prev.map((g) => {
         if (g.id === updatedGoal.id) {
-          // Se a meta foi marcada como concluída agora, lança celebração!
           if (updatedGoal.status === 'concluida' && g.status !== 'concluida') {
             triggerCelebration();
           }
@@ -91,11 +90,12 @@ export const AppProvider = ({ children }) => {
   const addTransaction = (newTx) => {
     setTransactions((prev) => [newTx, ...prev]);
 
-    // Se for uma receita empresarial, atualizar automaticamente metas empresariais em andamento
-    if (newTx.account === 'empresa' && newTx.type === 'receita') {
+    // Atualizar metas automaticamente se for uma receita
+    if (newTx.type === 'receita') {
+      const targetCategory = newTx.account === 'pessoal' ? 'pessoal' : 'empresarial';
       setGoals((prevGoals) =>
         prevGoals.map((g) => {
-          if (g.category === 'empresarial' && g.status === 'em_andamento' && g.targetAmount > 0) {
+          if (g.category === targetCategory && g.status === 'em_andamento' && g.targetAmount > 0) {
             const newAmount = g.currentAmount + parseFloat(newTx.amount);
             const isFinished = newAmount >= g.targetAmount;
             if (isFinished) triggerCelebration();
@@ -172,14 +172,15 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  // Lançar cobrança/receita vinda de um Cliente
+  // Lançar cobrança/receita vinda de um Cliente (direcionada para a conta PF ou PJ correspondente)
   const generateClientPayment = (client) => {
+    const isPessoal = client.category === 'pessoal';
     const tx = {
       id: Date.now().toString(),
       description: `Pagamento ${client.contractType === 'mensalidade' ? 'Mensal' : 'Projeto'} - ${client.name}`,
       amount: client.value,
       type: 'receita',
-      account: 'empresa',
+      account: isPessoal ? 'pessoal' : 'empresa', // Direciona para PF ou PJ!
       category: client.contractType === 'mensalidade' ? 'Contrato Recorrente' : 'Projeto Pontual',
       date: new Date().toISOString().split('T')[0],
       recurring: client.contractType === 'mensalidade',
@@ -214,7 +215,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const resetToSampleData = () => {
-    if (confirm('Deseja restaurar os dados de demonstração originais?')) {
+    if (confirm('Deseja restaurar os dados de demonstração originais com os CRMs PF e PJ?')) {
       setGoals(INITIAL_GOALS);
       setTransactions(INITIAL_TRANSACTIONS);
       setClients(INITIAL_CLIENTS);

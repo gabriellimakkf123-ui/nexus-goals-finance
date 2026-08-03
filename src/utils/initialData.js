@@ -145,16 +145,18 @@ export const INITIAL_TRANSACTIONS = [
 ];
 
 export const INITIAL_CLIENTS = [
+  // --- CLIENTES EMPRESARIAIS (PJ) ---
   {
     id: 'c1',
     name: 'TechCorp Soluções',
     contactPerson: 'Carlos Eduardo',
     email: 'carlos@techcorp.com.br',
     phone: '(11) 98765-4321',
+    category: 'empresa', // PJ
     status: 'fechado',
     contractType: 'mensalidade',
     value: 5500,
-    notes: 'Cliente desde 2025. Manutenção de sistema web + suporte prioritário.',
+    notes: 'Cliente PJ. Manutenção de sistema web + suporte prioritário.',
     tags: ['SaaS', 'VIP']
   },
   {
@@ -163,6 +165,7 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Dra. Vanessa',
     email: 'vanessa@odontoclinika.com',
     phone: '(11) 97123-8899',
+    category: 'empresa', // PJ
     status: 'fechado',
     contractType: 'mensalidade',
     value: 3200,
@@ -175,10 +178,11 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Fernanda Lima',
     email: 'fernanda@vanguarda.com',
     phone: '(21) 99887-1122',
+    category: 'empresa', // PJ
     status: 'fechado',
     contractType: 'projeto_pontual',
     value: 9600,
-    notes: 'Projeto completo de reformulação de e-commerce Shopify. 50% pago na entrada.',
+    notes: 'Projeto e-commerce Shopify.',
     tags: ['E-commerce', 'Pontual']
   },
   {
@@ -187,10 +191,11 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Roberto Mendes',
     email: 'roberto@logexpress.com.br',
     phone: '(31) 98444-5566',
+    category: 'empresa', // PJ
     status: 'proposta',
     contractType: 'mensalidade',
     value: 4200,
-    notes: 'Proposta enviada para desenvolvimento de app de rastreamento com mensalidade de hospedagem e suporte.',
+    notes: 'Proposta enviada para desenvolvimento de app.',
     tags: ['Logística', 'Em Negociação']
   },
   {
@@ -199,30 +204,73 @@ export const INITIAL_CLIENTS = [
     contactPerson: 'Juliana Paes',
     email: 'juliana@gourmet.com',
     phone: '(11) 96555-4433',
+    category: 'empresa', // PJ
     status: 'prospeccao',
     contractType: 'projeto_pontual',
     value: 6500,
-    notes: 'Reunião inicial agendada para levantar requisitos de catálogo digital e totens de atendimento.',
+    notes: 'Reunião inicial agendada.',
     tags: ['Alimentação']
   },
+
+  // --- CLIENTES & OPORTUNIDADES PESSOAIS (PF) ---
   {
-    id: 'c6',
-    name: 'Imobiliária Prime',
-    contactPerson: 'Marcos Aurélio',
-    email: 'marcos@imobprime.com',
-    phone: '(11) 94321-7788',
-    status: 'concluido',
+    id: 'cpf1',
+    name: 'Mentoria Individual de Carreira - Lucas Gabriel',
+    contactPerson: 'Lucas Gabriel',
+    email: 'lucas.gabriel@email.com',
+    phone: '(11) 99111-2233',
+    category: 'pessoal', // PF
+    status: 'fechado',
+    contractType: 'mensalidade',
+    value: 1200,
+    notes: 'Mentoria pessoal de desenvolvimento de software (4 sessões/mês).',
+    tags: ['Mentoria', 'PF']
+  },
+  {
+    id: 'cpf2',
+    name: 'Venda de Notebook Usado (MacBook Pro)',
+    contactPerson: 'Matheus Oliveira',
+    email: 'matheus@email.com',
+    phone: '(11) 98222-4455',
+    category: 'pessoal', // PF
+    status: 'fechado',
     contractType: 'projeto_pontual',
-    value: 8000,
-    notes: 'Portal imobiliário entregue com sucesso.',
-    tags: ['Imóveis']
+    value: 4500,
+    notes: 'Venda pessoal parcelada em 2x.',
+    tags: ['Desapego', 'Venda PF']
+  },
+  {
+    id: 'cpf3',
+    name: 'Freelance Pessoal - Blog para Amigo (Dr. Bruno)',
+    contactPerson: 'Bruno Ramos',
+    email: 'bruno@email.com',
+    phone: '(21) 97333-6677',
+    category: 'pessoal', // PF
+    status: 'proposta',
+    contractType: 'projeto_pontual',
+    value: 2500,
+    notes: 'Criação de blog pessoal médico.',
+    tags: ['Freela PF']
+  },
+  {
+    id: 'cpf4',
+    name: 'Consultoria Financeira Pessoal com Amigos',
+    contactPerson: 'Camila & Pedro',
+    email: 'camila@email.com',
+    phone: '(11) 96444-8899',
+    category: 'pessoal', // PF
+    status: 'prospeccao',
+    contractType: 'projeto_pontual',
+    value: 800,
+    notes: 'Conversa informal para organizar planejamento financeiro de casal.',
+    tags: ['Networking']
   }
 ];
 
 export const KANBAN_STAGES = [
   { id: 'prospeccao', title: '1. Em Prospecção', color: 'var(--accent-cyan)' },
   { id: 'proposta', title: '2. Proposta Enviada', color: 'var(--accent-amber)' },
-  { id: 'fechado', title: '3. Contrato Fechado (Ativo)', color: 'var(--accent-emerald)' },
+  { id: 'fechado', title: '3. Contrato / Acordo Fechado', color: 'var(--accent-emerald)' },
   { id: 'concluido', title: '4. Concluído / Entregue', color: 'var(--accent-purple)' },
   { id: 'perdido', title: '5. Perdido / Cancelado', color: 'var(--accent-rose)' }
 ];
