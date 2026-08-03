@@ -7,6 +7,7 @@ import { CalendarView } from './components/Calendar/CalendarView';
 import { GoalsView } from './components/Goals/GoalsView';
 import { FinanceView } from './components/Finance/FinanceView';
 import { ClientsView } from './components/Clients/ClientsView';
+import { DatabaseSettingsModal } from './components/Settings/DatabaseSettingsModal';
 
 const MainLayout = () => {
   const { activeTab } = useApp();
@@ -15,10 +16,11 @@ const MainLayout = () => {
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isProlaboreModalOpen, setIsProlaboreModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [isDbModalOpen, setIsDbModalOpen] = useState(false);
 
   return (
     <div className="app-container">
-      <Sidebar />
+      <Sidebar onOpenDbModal={() => setIsDbModalOpen(true)} />
 
       <main className="main-content">
         <Header
@@ -27,6 +29,7 @@ const MainLayout = () => {
           onOpenClientModal={() => setIsClientModalOpen(true)}
           onOpenProlaboreModal={() => setIsProlaboreModalOpen(true)}
           onOpenCalendarModal={() => setIsCalendarModalOpen(true)}
+          onOpenDbModal={() => setIsDbModalOpen(true)}
         />
 
         {activeTab === 'dashboard' && (
@@ -66,6 +69,12 @@ const MainLayout = () => {
             setIsModalOpen={setIsClientModalOpen}
           />
         )}
+
+        {/* Modal de Configuração do Banco de Dados Cloud */}
+        <DatabaseSettingsModal
+          isOpen={isDbModalOpen}
+          onClose={() => setIsDbModalOpen(false)}
+        />
       </main>
     </div>
   );

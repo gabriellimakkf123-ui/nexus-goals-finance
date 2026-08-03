@@ -1,10 +1,12 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { getCurrentMonthYear } from '../utils/formatters';
-import { Plus, ArrowRightLeft, Calendar } from 'lucide-react';
+import { isDatabaseConnected } from '../services/supabase';
+import { Plus, ArrowRightLeft, Calendar, Database } from 'lucide-react';
 
-export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenProlaboreModal, onOpenCalendarModal }) => {
+export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenProlaboreModal, onOpenCalendarModal, onOpenDbModal }) => {
   const { activeTab } = useApp();
+  const isDbConnected = isDatabaseConnected();
 
   const titles = {
     dashboard: 'Visão Geral & Dashboard 360°',
@@ -35,6 +37,18 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
 
       {/* Quick Action Buttons */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <button
+          onClick={onOpenDbModal}
+          className="btn btn-secondary"
+          style={{
+            fontSize: '0.85rem',
+            borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.4)' : undefined,
+            color: isDbConnected ? 'var(--accent-emerald)' : 'var(--text-secondary)'
+          }}
+        >
+          <Database size={16} color={isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'} /> {isDbConnected ? 'Cloud Ativo' : 'Banco Cloud'}
+        </button>
+
         <button onClick={onOpenProlaboreModal} className="btn btn-secondary" style={{ fontSize: '0.85rem' }}>
           <ArrowRightLeft size={16} color="var(--accent-amber)" /> Retirar Pró-Labore
         </button>

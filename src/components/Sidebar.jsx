@@ -1,9 +1,11 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Zap, Download, RefreshCw } from 'lucide-react';
+import { isDatabaseConnected } from '../services/supabase';
+import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Zap, Download, RefreshCw, Database } from 'lucide-react';
 
-export const Sidebar = () => {
+export const Sidebar = ({ onOpenDbModal }) => {
   const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
+  const isDbConnected = isDatabaseConnected();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard 360°', icon: LayoutDashboard },
@@ -84,15 +86,32 @@ export const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Footer Controls */}
+      {/* Footer Controls & DB Status */}
       <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--bg-glass-border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        
+        {/* Status do Banco de Dados */}
+        <button
+          onClick={onOpenDbModal}
+          className="btn btn-secondary"
+          style={{
+            width: '100%',
+            justify: 'flex-start',
+            fontSize: '0.8rem',
+            borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)',
+            color: isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'
+          }}
+        >
+          <Database size={16} /> Banco: {isDbConnected ? 'Cloud PostgreSQL' : 'Local'}
+        </button>
+
         <button
           onClick={exportData}
           className="btn btn-secondary"
           style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.8rem' }}
         >
-          <Download size={16} /> Backup dos Dados (JSON)
+          <Download size={16} /> Backup JSON
         </button>
+
         <button
           onClick={resetToSampleData}
           className="btn btn-secondary"
