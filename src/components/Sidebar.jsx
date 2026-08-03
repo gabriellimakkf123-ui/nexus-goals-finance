@@ -3,8 +3,7 @@ import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
 import {
   LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
-  Download, RefreshCw, Database, DollarSign, Filter, Package, ShoppingBag,
-  FileText, BarChart3, Settings, Moon
+  Download, RefreshCw, Database, Moon
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
@@ -33,26 +32,31 @@ export const Sidebar = ({ onOpenDbModal }) => {
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Vertex Digital no topo esquerdo */}
+        {/* Logo Vertex Digital Proporcional e Nítido */}
         <div style={{
-          padding: '0.25rem 0.5rem 1.5rem 0.5rem',
+          padding: '0.5rem 0.5rem 1.5rem 0.5rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          overflow: 'hidden'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital"
             style={{
-              height: '42px',
-              maxWidth: '100%',
-              objectFit: 'contain'
+              height: '62px',
+              width: 'auto',
+              maxWidth: '210px',
+              objectFit: 'contain',
+              transform: 'scale(1.4)',
+              transformOrigin: 'left center',
+              filter: 'drop-shadow(0 4px 12px rgba(220, 38, 38, 0.4))'
             }}
           />
         </div>
 
-        {/* Links de Navegação Principal do Design */}
-        <nav style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+        {/* Links de Navegação Principal */}
+        <nav style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -64,7 +68,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.85rem',
-                  padding: '0.7rem 0.9rem',
+                  padding: '0.75rem 0.95rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
                   background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
@@ -85,7 +89,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
         </nav>
       </div>
 
-      {/* Footer Controls: DB Status, Backup e Toggle Modo Escuro */}
+      {/* Footer Controls & Toggle Modo Escuro */}
       <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--bg-glass-border)', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
         
         {/* Status Banco Cloud */}
@@ -111,7 +115,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
           <Download size={15} /> Backup JSON
         </button>
 
-        {/* Toggle Modo Escuro do Design */}
+        {/* Toggle Modo Escuro */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
