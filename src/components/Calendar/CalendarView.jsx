@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatDate, generateId } from '../../utils/formatters';
-import { Calendar as CalendarIcon, Clock, MapPin, Plus, ChevronLeft, ChevronRight, User, Building2, Trash2, Edit2, CheckCircle2 } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, MapPin, Plus, ChevronLeft, ChevronRight, User, Building2, Trash2, Edit2 } from 'lucide-react';
 import { Modal } from '../Common/Modal';
 
 export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
-  const { events, addEvent, updateEvent, deleteEvent, clients, goals } = useApp();
+  const { events, addEvent, updateEvent, deleteEvent } = useApp();
 
   // Data atual e controle do calendário
   const today = new Date();
@@ -45,12 +45,14 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
   const month = currentMonthDate.getMonth();
   const monthName = currentMonthDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-  const firstDayOfWeek = new Date(year, month, 1).getDay(); // 0 = Domingo
+  // Primeiro dia do mês (0 = Domingo, 6 = Sábado)
+  const firstDayOfWeek = new Date(year, month, 1).getDay();
+  // Total de dias no mês
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   // Gerar células do calendário
   const calendarCells = [];
-  // Células vazias do mês anterior
+  // Espaços em branco antes do dia 1
   for (let i = 0; i < firstDayOfWeek; i++) {
     calendarCells.push(null);
   }
@@ -115,12 +117,10 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
   const selectedDayEvents = filteredEvents.filter((e) => e.date === selectedDateStr);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
 
-      {/* Header com Navegação e Filtros */}
+      {/* Header com Filtros & Botão de Agendamento */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        
-        {/* Filtros PF vs PJ */}
         <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(15, 20, 32, 0.6)', padding: '0.35rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--bg-glass-border)' }}>
           <button
             onClick={() => setFilterCategory('todas')}
@@ -139,7 +139,7 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
               background: filterCategory === 'empresa' ? 'rgba(6, 182, 212, 0.2)' : 'transparent', color: filterCategory === 'empresa' ? 'var(--accent-cyan)' : 'var(--text-secondary)'
             }}
           >
-            <Building2 size={16} /> Compromissos Empresa (PJ)
+            <Building2 size={16} /> Empresa (PJ)
           </button>
 
           <button
@@ -149,7 +149,7 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
               background: filterCategory === 'pessoal' ? 'rgba(157, 78, 221, 0.2)' : 'transparent', color: filterCategory === 'pessoal' ? 'var(--color-pessoal)' : 'var(--text-secondary)'
             }}
           >
-            <User size={16} /> Compromissos Pessoais (PF)
+            <User size={16} /> Pessoal (PF)
           </button>
         </div>
 
@@ -158,16 +158,16 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
         </button>
       </div>
 
-      {/* Grid Principal: Calendário do Mês + Agenda Lateral do Dia */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+      {/* Grid Flexível de Layout: Calendário à Esquerda + Painel Lateral da Agenda à Direita */}
+      <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', width: '100%', alignItems: 'stretch' }}>
         
-        {/* Calendário Mensal em Grade */}
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
+        {/* Painel do Calendário (Flex 1, Responsivo) */}
+        <div className="glass-panel" style={{ flex: '1 1 550px', minWidth: '0', padding: '1.5rem', overflow: 'hidden' }}>
           
           {/* Navegação do Mês */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', textTransform: 'capitalize' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'white', textTransform: 'capitalize' }}>
                 {monthName}
               </h3>
               <button onClick={goToToday} className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem' }}>
@@ -185,8 +185,18 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
             </div>
           </div>
 
-          {/* Dias da Semana (D S T Q Q S S) */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.35rem', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.5rem' }}>
+          {/* Cabeçalho dos Dias da Semana */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: '0.35rem',
+            textTransform: 'uppercase',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            color: 'var(--text-muted)',
+            textAlign: 'center',
+            marginBottom: '0.5rem'
+          }}>
             <div>Dom</div>
             <div>Seg</div>
             <div>Ter</div>
@@ -196,11 +206,26 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
             <div>Sáb</div>
           </div>
 
-          {/* Células de Dias do Mês */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.35rem' }}>
+          {/* Grade Perfeita dos Dias do Mês */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gap: '0.35rem',
+            width: '100%'
+          }}>
             {calendarCells.map((cell, index) => {
               if (!cell) {
-                return <div key={`empty-${index}`} style={{ height: '75px', borderRadius: '8px', background: 'transparent' }} />;
+                return (
+                  <div
+                    key={`empty-${index}`}
+                    style={{
+                      minHeight: '80px',
+                      borderRadius: '8px',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid transparent'
+                    }}
+                  />
+                );
               }
 
               const isToday = cell.dateStr === today.toISOString().split('T')[0];
@@ -212,14 +237,14 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
                   key={cell.dateStr}
                   onClick={() => setSelectedDateStr(cell.dateStr)}
                   style={{
-                    height: '75px',
+                    minHeight: '80px',
                     padding: '0.4rem',
                     borderRadius: '8px',
                     background: isSelected
-                      ? 'rgba(6, 182, 212, 0.15)'
+                      ? 'rgba(6, 182, 212, 0.18)'
                       : isToday
-                      ? 'rgba(157, 78, 221, 0.15)'
-                      : 'rgba(15, 20, 32, 0.6)',
+                      ? 'rgba(157, 78, 221, 0.18)'
+                      : 'rgba(15, 20, 32, 0.7)',
                     border: `1px solid ${
                       isSelected
                         ? 'var(--accent-cyan)'
@@ -231,44 +256,51 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    overflow: 'hidden',
                     transition: 'all 0.15s ease'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{
                       fontSize: '0.85rem',
-                      fontWeight: isToday || isSelected ? 800 : 500,
+                      fontWeight: isToday || isSelected ? 800 : 600,
                       color: isToday ? 'var(--accent-purple)' : isSelected ? 'var(--accent-cyan)' : 'white'
                     }}>
                       {cell.day}
                     </span>
                     {dayEvents.length > 0 && (
-                      <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.35rem', borderRadius: '100px', background: 'rgba(255, 255, 255, 0.15)', color: 'white' }}>
+                      <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.05rem 0.3rem', borderRadius: '100px', background: 'rgba(255, 255, 255, 0.15)', color: 'white' }}>
                         {dayEvents.length}
                       </span>
                     )}
                   </div>
 
-                  {/* Marcadores de Eventos */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', overflow: 'hidden' }}>
+                  {/* Lista de Eventos no Célula do Dia */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.2rem', overflow: 'hidden' }}>
                     {dayEvents.slice(0, 2).map((ev) => (
                       <div
                         key={ev.id}
                         style={{
                           fontSize: '0.65rem',
                           fontWeight: 600,
-                          padding: '0.1rem 0.3rem',
-                          borderRadius: '3px',
+                          padding: '0.15rem 0.3rem',
+                          borderRadius: '4px',
                           whiteSpace: 'nowrap',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
-                          background: ev.category === 'pessoal' ? 'rgba(157, 78, 221, 0.3)' : 'rgba(6, 182, 212, 0.3)',
-                          color: ev.category === 'pessoal' ? 'var(--color-pessoal)' : 'var(--accent-cyan)'
+                          background: ev.category === 'pessoal' ? 'rgba(157, 78, 221, 0.35)' : 'rgba(6, 182, 212, 0.35)',
+                          color: ev.category === 'pessoal' ? '#e9d5ff' : '#bae6fd',
+                          borderLeft: `2px solid ${ev.category === 'pessoal' ? 'var(--color-pessoal)' : 'var(--accent-cyan)'}`
                         }}
                       >
                         {ev.startTime ? `${ev.startTime} ` : ''}{ev.title}
                       </div>
                     ))}
+                    {dayEvents.length > 2 && (
+                      <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+                        +{dayEvents.length - 2} mais
+                      </span>
+                    )}
                   </div>
                 </div>
               );
@@ -277,84 +309,84 @@ export const CalendarView = ({ isModalOpen, setIsModalOpen }) => {
 
         </div>
 
-        {/* Painel da Agenda do Dia Selecionado */}
-        <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Clock size={18} color="var(--accent-cyan)" /> Agenda de {formatDate(selectedDateStr)}
-                </h3>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                  {selectedDayEvents.length} {selectedDayEvents.length === 1 ? 'compromisso agendado' : 'compromissos agendados'}
-                </span>
-              </div>
-
-              <button onClick={() => openAddModalForDate(selectedDateStr)} className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '0.35rem 0.7rem' }}>
-                <Plus size={14} /> Novo
-              </button>
+        {/* Painel Lateral da Agenda do Dia Selecionado */}
+        <div className="glass-panel" style={{ flex: '0 0 340px', minWidth: '300px', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+          
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Clock size={18} color="var(--accent-cyan)" /> Agenda do Dia
+              </h3>
+              <span style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>
+                {formatDate(selectedDateStr)}
+              </span>
             </div>
 
-            {/* Lista de Eventos do Dia */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', maxHeight: '420px', overflowY: 'auto' }}>
-              {selectedDayEvents.length === 0 ? (
-                <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.88rem' }}>
-                  Nenhum compromisso agendado para este dia.<br />Clique no botão <strong>+ Novo</strong> para adicionar.
-                </div>
-              ) : (
-                selectedDayEvents.map((ev) => {
-                  const isPessoal = ev.category === 'pessoal';
+            <button onClick={() => openAddModalForDate(selectedDateStr)} className="btn btn-secondary" style={{ fontSize: '0.75rem', padding: '0.35rem 0.7rem' }}>
+              <Plus size={14} /> Novo
+            </button>
+          </div>
 
-                  return (
-                    <div
-                      key={ev.id}
-                      className="glass-card"
-                      style={{
-                        padding: '0.9rem 1rem',
-                        borderLeft: `4px solid ${isPessoal ? 'var(--color-pessoal)' : 'var(--accent-cyan)'}`
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.35rem' }}>
-                        <span className={`badge ${isPessoal ? 'badge-pessoal' : 'badge-empresa'}`}>
-                          {isPessoal ? 'Pessoal (PF)' : 'Empresa (PJ)'}
-                        </span>
+          {/* Lista de Eventos */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', flex: 1, overflowY: 'auto', maxHeight: '520px' }}>
+            {selectedDayEvents.length === 0 ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', background: 'rgba(15, 20, 32, 0.4)', borderRadius: 'var(--radius-sm)', border: '1px dashed var(--bg-glass-border)' }}>
+                Nenhum compromisso agendado para esta data.<br /><br />
+                Clique no botão <strong>+ Novo</strong> para incluir um horário na sua agenda.
+              </div>
+            ) : (
+              selectedDayEvents.map((ev) => {
+                const isPessoal = ev.category === 'pessoal';
 
-                        <div style={{ display: 'flex', gap: '0.2rem' }}>
-                          <button onClick={() => openEditModal(ev)} className="btn-icon" style={{ padding: '0.25rem' }}>
-                            <Edit2 size={13} />
-                          </button>
-                          <button onClick={() => deleteEvent(ev.id)} className="btn-icon" style={{ padding: '0.25rem', color: 'var(--accent-rose)' }}>
-                            <Trash2 size={13} />
-                          </button>
-                        </div>
+                return (
+                  <div
+                    key={ev.id}
+                    className="glass-card"
+                    style={{
+                      padding: '0.9rem 1rem',
+                      borderLeft: `4px solid ${isPessoal ? 'var(--color-pessoal)' : 'var(--accent-cyan)'}`
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.35rem' }}>
+                      <span className={`badge ${isPessoal ? 'badge-pessoal' : 'badge-empresa'}`}>
+                        {isPessoal ? 'Pessoal (PF)' : 'Empresa (PJ)'}
+                      </span>
+
+                      <div style={{ display: 'flex', gap: '0.2rem' }}>
+                        <button onClick={() => openEditModal(ev)} className="btn-icon" style={{ padding: '0.25rem' }}>
+                          <Edit2 size={13} />
+                        </button>
+                        <button onClick={() => deleteEvent(ev.id)} className="btn-icon" style={{ padding: '0.25rem', color: 'var(--accent-rose)' }}>
+                          <Trash2 size={13} />
+                        </button>
                       </div>
+                    </div>
 
-                      <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white', marginBottom: '0.3rem' }}>
-                        {ev.title}
-                      </h4>
+                    <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'white', marginBottom: '0.3rem' }}>
+                      {ev.title}
+                    </h4>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--accent-amber)', fontWeight: 600 }}>
+                        <Clock size={13} /> {ev.startTime || '09:00'} - {ev.endTime || '10:00'}
+                      </span>
+
+                      {ev.location && (
                         <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                          <Clock size={13} color="var(--accent-amber)" /> {ev.startTime || '09:00'} - {ev.endTime || '10:00'}
+                          <MapPin size={13} color="var(--accent-cyan)" /> {ev.location}
                         </span>
-
-                        {ev.location && (
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <MapPin size={13} color="var(--accent-cyan)" /> {ev.location}
-                          </span>
-                        )}
-                      </div>
-
-                      {ev.notes && (
-                        <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', background: 'rgba(15, 20, 32, 0.5)', padding: '0.4rem', borderRadius: '4px' }}>
-                          {ev.notes}
-                        </p>
                       )}
                     </div>
-                  );
-                })
-              )}
-            </div>
+
+                    {ev.notes && (
+                      <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', background: 'rgba(15, 20, 32, 0.5)', padding: '0.4rem', borderRadius: '4px' }}>
+                        {ev.notes}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
