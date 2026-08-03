@@ -1,56 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
-import { LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon, Download, RefreshCw, Database } from 'lucide-react';
+import {
+  LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
+  Download, RefreshCw, Database, DollarSign, Filter, Package, ShoppingBag,
+  FileText, BarChart3, Settings, Moon
+} from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 export const Sidebar = ({ onOpenDbModal }) => {
   const { activeTab, setActiveTab, exportData, resetToSampleData } = useApp();
   const isDbConnected = isDatabaseConnected();
+  const [darkMode, setDarkMode] = useState(true);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard 360°', icon: LayoutDashboard },
-    { id: 'agenda', label: 'Agenda & Calendário', icon: CalendarIcon },
-    { id: 'metas', label: 'Metas (PF & PJ)', icon: Target },
-    { id: 'financas', label: 'Finanças (PF & PJ)', icon: Wallet },
-    { id: 'clientes', label: 'CRM Dual (PF & PJ)', icon: Users },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'metas', label: 'Metas & Objetivos', icon: Target },
+    { id: 'financas', label: 'Financeiro (PF & PJ)', icon: Wallet },
+    { id: 'clientes', label: 'Clientes (CRM Dual)', icon: Users },
+    { id: 'agenda', label: 'Agenda & Tarefas', icon: CalendarIcon },
   ];
 
   return (
     <aside style={{
-      width: '270px',
-      background: 'var(--bg-card)',
+      width: '260px',
+      background: 'var(--bg-sidebar)',
       borderRight: '1px solid var(--bg-glass-border)',
       display: 'flex',
       flexDirection: 'column',
-      padding: '1.75rem 1.1rem',
+      padding: '1.5rem 1rem',
       justifyContent: 'space-between',
       flexShrink: 0
     }}>
-      {/* Brand Header com Logo em Destaque Expandido */}
       <div>
+        {/* Logo Vertex Digital no topo esquerdo */}
         <div style={{
-          padding: '0.5rem 0.25rem 1.75rem 0.25rem',
+          padding: '0.25rem 0.5rem 1.5rem 0.5rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital"
             style={{
-              height: '80px',
-              width: 'auto',
+              height: '42px',
               maxWidth: '100%',
-              objectFit: 'contain',
-              filter: 'drop-shadow(0 6px 16px rgba(220, 38, 38, 0.4))'
+              objectFit: 'contain'
             }}
           />
         </div>
 
-        {/* Navigation Links */}
-        <nav style={{ marginTop: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+        {/* Links de Navegação Principal do Design */}
+        <nav style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -62,20 +64,20 @@ export const Sidebar = ({ onOpenDbModal }) => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.85rem',
-                  padding: '0.8rem 1rem',
+                  padding: '0.7rem 0.9rem',
                   borderRadius: 'var(--radius-sm)',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(90deg, rgba(220, 38, 38, 0.25), rgba(37, 99, 235, 0.15))' : 'transparent',
-                  color: isActive ? 'white' : 'var(--text-secondary)',
+                  background: isActive ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                  color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
-                  fontSize: '0.92rem',
+                  fontSize: '0.88rem',
                   cursor: 'pointer',
                   textAlign: 'left',
-                  transition: 'all 0.2s ease',
+                  transition: 'all 0.15s ease',
                   borderLeft: isActive ? '3px solid #DC2626' : '3px solid transparent'
                 }}
               >
-                <Icon size={20} color={isActive ? '#DC2626' : 'currentColor'} />
+                <Icon size={18} color={isActive ? '#DC2626' : 'var(--text-muted)'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -83,39 +85,70 @@ export const Sidebar = ({ onOpenDbModal }) => {
         </nav>
       </div>
 
-      {/* Footer Controls & DB Status */}
-      <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid var(--bg-glass-border)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      {/* Footer Controls: DB Status, Backup e Toggle Modo Escuro */}
+      <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--bg-glass-border)', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
         
-        {/* Status do Banco de Dados */}
+        {/* Status Banco Cloud */}
         <button
           onClick={onOpenDbModal}
           className="btn btn-secondary"
           style={{
             width: '100%',
             justify: 'flex-start',
-            fontSize: '0.8rem',
+            fontSize: '0.78rem',
             borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)',
             color: isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'
           }}
         >
-          <Database size={16} /> Banco: {isDbConnected ? 'Cloud PostgreSQL' : 'Local'}
+          <Database size={15} /> Banco: {isDbConnected ? 'Cloud PostgreSQL' : 'Local'}
         </button>
 
         <button
           onClick={exportData}
           className="btn btn-secondary"
-          style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.8rem' }}
+          style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.78rem' }}
         >
-          <Download size={16} /> Backup JSON
+          <Download size={15} /> Backup JSON
         </button>
 
-        <button
-          onClick={resetToSampleData}
-          className="btn btn-secondary"
-          style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.8rem', color: 'var(--text-muted)' }}
-        >
-          <RefreshCw size={16} /> Restaurar Demo
-        </button>
+        {/* Toggle Modo Escuro do Design */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0.5rem 0.75rem',
+          background: 'rgba(255, 255, 255, 0.04)',
+          borderRadius: 'var(--radius-sm)',
+          fontSize: '0.8rem',
+          color: 'var(--text-secondary)'
+        }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Moon size={15} color="var(--text-muted)" /> Modo Escuro
+          </span>
+          <div
+            onClick={() => setDarkMode(!darkMode)}
+            style={{
+              width: '38px',
+              height: '20px',
+              borderRadius: '100px',
+              background: darkMode ? '#DC2626' : 'rgba(255, 255, 255, 0.2)',
+              position: 'relative',
+              cursor: 'pointer',
+              transition: 'background 0.2s ease'
+            }}
+          >
+            <div style={{
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              background: '#FFFFFF',
+              position: 'absolute',
+              top: '2px',
+              left: darkMode ? '20px' : '2px',
+              transition: 'left 0.2s ease'
+            }} />
+          </div>
+        </div>
       </div>
     </aside>
   );
