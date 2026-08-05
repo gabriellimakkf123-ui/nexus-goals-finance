@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
 import {
   LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
-  Download, RefreshCw, Database, Moon, Sun
+  PlusCircle, BarChart3, Settings, Moon, Sun, ShieldCheck
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
-export const Sidebar = ({ onOpenDbModal }) => {
-  const { activeTab, setActiveTab, exportData, resetToSampleData, darkMode, toggleDarkMode } = useApp();
-  const isDbConnected = isDatabaseConnected();
+export const Sidebar = ({
+  onOpenDbModal,
+  onOpenTxModal,
+  onOpenClientModal
+}) => {
+  const { activeTab, setActiveTab, darkMode, toggleDarkMode } = useApp();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -17,7 +20,19 @@ export const Sidebar = ({ onOpenDbModal }) => {
     { id: 'financas', label: 'Financeiro (PF & PJ)', icon: Wallet },
     { id: 'clientes', label: 'Clientes (CRM Dual)', icon: Users },
     { id: 'agenda', label: 'Agenda & Tarefas', icon: CalendarIcon },
+    { id: 'lancamentos', label: 'Lançamentos', icon: PlusCircle, action: onOpenTxModal },
+    { id: 'crm', label: 'CRM', icon: Users, action: () => setActiveTab('clientes') },
+    { id: 'relatorios', label: 'Relatórios', icon: BarChart3, action: () => setActiveTab('dashboard') },
+    { id: 'configuracoes', label: 'Configurações', icon: Settings, action: onOpenDbModal },
   ];
+
+  const handleNavClick = (item) => {
+    if (item.action) {
+      item.action();
+    } else {
+      setActiveTab(item.id);
+    }
+  };
 
   return (
     <aside style={{
@@ -31,7 +46,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Vertex Digital */}
+        {/* Logo 3D Vertex Digital */}
         <div style={{
           padding: '0.25rem 0.25rem 1.25rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
@@ -55,30 +70,31 @@ export const Sidebar = ({ onOpenDbModal }) => {
           />
         </div>
 
-        {/* Links de Navegação Principal */}
-        <nav style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+        {/* Links de Navegação Fies ao Print */}
+        <nav style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+
             return (
               <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                key={item.id + item.label}
+                onClick={() => handleNavClick(item)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.85rem',
-                  padding: '0.75rem 0.95rem',
+                  padding: '0.7rem 0.95rem',
                   borderRadius: 'var(--radius-sm)',
-                  border: 'none',
+                  border: isActive ? '1px solid #DC2626' : '1px solid transparent',
                   background: isActive ? 'rgba(220, 38, 38, 0.15)' : 'transparent',
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  color: isActive ? '#FFFFFF' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
                   fontSize: '0.88rem',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.15s ease',
-                  borderLeft: isActive ? '3px solid #DC2626' : '3px solid transparent'
+                  boxShadow: isActive ? '0 0 15px rgba(220, 38, 38, 0.3)' : 'none'
                 }}
               >
                 <Icon size={18} color={isActive ? '#DC2626' : 'var(--text-muted)'} />
@@ -89,41 +105,35 @@ export const Sidebar = ({ onOpenDbModal }) => {
         </nav>
       </div>
 
-      {/* Footer Controls & Toggle Modo Escuro */}
-      <div style={{ marginTop: 'auto', paddingTop: '1.25rem', borderTop: '1px solid var(--bg-glass-border)', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+      {/* Footer Banner com Marca Vertex Digital (Red Glowing Box) */}
+      <div style={{ marginTop: 'auto', paddingTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         
-        {/* Status Banco Cloud */}
-        <button
-          onClick={onOpenDbModal}
-          className="btn btn-secondary"
-          style={{
-            width: '100%',
-            justify: 'flex-start',
-            fontSize: '0.78rem',
-            borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)',
-            color: isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'
-          }}
-        >
-          <Database size={15} /> Banco: {isDbConnected ? 'Cloud PostgreSQL' : 'Local'}
-        </button>
+        {/* Banner do Canto Inferior Esquerdo do Print */}
+        <div style={{
+          padding: '1rem',
+          background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(9, 11, 18, 0.8))',
+          borderRadius: 'var(--radius-md)',
+          border: '1px solid rgba(220, 38, 38, 0.4)',
+          boxShadow: '0 4px 15px rgba(220, 38, 38, 0.2)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+            <span style={{ color: '#DC2626', fontWeight: 900, fontSize: '0.9rem' }}>V</span>
+            <span style={{ color: '#FFFFFF', fontWeight: 800, fontSize: '0.82rem', letterSpacing: '0.05em' }}>VERTEX DIGITAL</span>
+          </div>
+          <p style={{ fontSize: '0.7rem', color: '#CBD5E1', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+            SOLUÇÕES QUE GERAM RESULTADOS REAIS.
+          </p>
+        </div>
 
-        <button
-          onClick={exportData}
-          className="btn btn-secondary"
-          style={{ width: '100%', justifyContent: 'flex-start', fontSize: '0.78rem' }}
-        >
-          <Download size={15} /> Backup JSON
-        </button>
-
-        {/* Toggle Modo Escuro / Claro Conectado ao AppContext */}
+        {/* Toggle Modo Escuro / Claro */}
         <div
           onClick={toggleDarkMode}
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0.55rem 0.75rem',
-            background: 'rgba(255, 255, 255, 0.05)',
+            padding: '0.5rem 0.75rem',
+            background: 'rgba(255, 255, 255, 0.04)',
             borderRadius: 'var(--radius-sm)',
             fontSize: '0.8rem',
             color: 'var(--text-secondary)',
@@ -157,6 +167,7 @@ export const Sidebar = ({ onOpenDbModal }) => {
             }} />
           </div>
         </div>
+
       </div>
     </aside>
   );

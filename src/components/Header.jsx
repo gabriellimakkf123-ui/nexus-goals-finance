@@ -1,85 +1,110 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
-import { Plus, ArrowRightLeft, Search, Bell, Calendar as CalendarIcon, Database, User } from 'lucide-react';
+import { Plus, ArrowRightLeft, Search, Bell, Calendar as CalendarIcon, Database } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
-export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOpenProlaboreModal, onOpenCalendarModal, onOpenDbModal }) => {
+export const Header = ({
+  onOpenGoalModal,
+  onOpenTxModal,
+  onOpenClientModal,
+  onOpenProlaboreModal,
+  onOpenCalendarModal,
+  onOpenDbModal
+}) => {
   const { activeTab } = useApp();
   const isDbConnected = isDatabaseConnected();
-
-  const headerInfo = {
-    dashboard: { title: 'Dashboard', subtitle: 'Visão geral do seu negócio' },
-    agenda: { title: 'Agenda & Tarefas', subtitle: 'Compromissos e horários (PF / PJ)' },
-    metas: { title: 'Metas & Objetivos', subtitle: 'Acompanhamento de objetivos pessoais e empresariais' },
-    financas: { title: 'Financeiro', subtitle: 'Gestão de caixas e entradas/saídas (PF / PJ)' },
-    clientes: { title: 'Clientes (CRM Dual)', subtitle: 'Pipeline Kanban e gestão de relacionamentos' }
-  };
-
-  const current = headerInfo[activeTab] || { title: 'Dashboard', subtitle: 'Visão geral do seu negócio' };
 
   return (
     <header style={{
       display: 'flex',
       flexDirection: 'column',
       gap: '1.25rem',
-      marginBottom: '1.75rem'
+      marginBottom: '1.75rem',
+      position: 'relative'
     }}>
-      {/* Top Utility Bar (Search, Notifications, Profile, Date Range) */}
+      {/* Top Banner Row (Greeting Left, Huge Central Header Banner, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1rem'
+        gap: '1.25rem'
       }}>
-        {/* Title & Subtitle */}
+        
+        {/* Left Greeting */}
         <div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF' }}>
-            {current.title}
-          </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-            {current.subtitle}
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.1rem' }}>
+            Bem-vindo de volta,
+          </span>
+          <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.1' }}>
+            GABRIEL LIMA
+          </h1>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+            Visão geral do seu negócio
           </p>
         </div>
 
-        {/* User Badge, Bell, Calendar Date Range Pill */}
+        {/* Central Logo Header Banner igual ao Print */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          padding: '0.5rem 1.5rem',
+          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.25), transparent 70%)',
+          borderRadius: 'var(--radius-md)'
+        }}>
+          <img
+            src={logoImg}
+            alt="Vertex Digital Banner"
+            style={{
+              height: '70px',
+              width: 'auto',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 0 15px rgba(220, 38, 38, 0.6))'
+            }}
+          />
+        </div>
+
+        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
           
           <button className="btn-icon" title="Buscar">
             <Search size={16} />
           </button>
 
-          {/* Notificação com Badge Vermelha */}
+          {/* Bell Notification Badge */}
           <div style={{ position: 'relative' }}>
             <button className="btn-icon" title="Notificações">
               <Bell size={16} />
             </button>
             <span style={{
               position: 'absolute',
-              top: '-3px',
-              right: '-3px',
+              top: '-4px',
+              right: '-4px',
               background: '#DC2626',
               color: '#FFFFFF',
               fontSize: '0.65rem',
-              fontWeight: 800,
-              width: '16px',
-              height: '16px',
+              fontWeight: 900,
+              width: '18px',
+              height: '18px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              border: '2px solid #07090E'
             }}>
               3
             </span>
           </div>
 
-          {/* Data Pill do Design */}
+          {/* Date Range Pill */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            padding: '0.5rem 0.9rem',
-            background: 'rgba(255, 255, 255, 0.05)',
+            padding: '0.55rem 0.95rem',
+            background: 'rgba(255, 255, 255, 0.04)',
             border: '1px solid var(--bg-glass-border)',
             borderRadius: 'var(--radius-sm)',
             fontSize: '0.8rem',
@@ -90,12 +115,12 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
             <span>01 - 31 Agosto, 2026</span>
           </div>
 
-          {/* Perfil do Usuário */}
+          {/* Profile Pill */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '0.6rem',
-            padding: '0.35rem 0.75rem',
+            gap: '0.65rem',
+            padding: '0.4rem 0.85rem',
             background: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid var(--bg-glass-border)',
             borderRadius: '100px'
@@ -104,13 +129,14 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #DC2626, #2563EB)',
+              background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              fontSize: '0.8rem',
-              fontWeight: 700
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              boxShadow: '0 0 10px rgba(220, 38, 38, 0.5)'
             }}>
               GL
             </div>
@@ -123,39 +149,47 @@ export const Header = ({ onOpenGoalModal, onOpenTxModal, onOpenClientModal, onOp
         </div>
       </div>
 
-      {/* Quick Action Buttons Row */}
+      {/* Row of Action Pill Buttons (Idênticos ao Print) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+        
+        {/* Cloud Ativo */}
         <button
           onClick={onOpenDbModal}
-          className="btn btn-secondary"
+          className="btn btn-pill-dark"
           style={{
             fontSize: '0.82rem',
-            borderColor: isDbConnected ? 'rgba(16, 185, 129, 0.4)' : undefined,
-            color: isDbConnected ? 'var(--accent-emerald)' : 'var(--text-secondary)'
+            borderColor: isDbConnected ? 'rgba(220, 38, 38, 0.6)' : 'rgba(245, 158, 11, 0.4)',
+            color: isDbConnected ? '#FF4D4D' : '#F59E0B'
           }}
         >
-          <Database size={15} color={isDbConnected ? 'var(--accent-emerald)' : 'var(--accent-amber)'} /> {isDbConnected ? 'Cloud Ativo' : 'Banco Cloud'}
+          <Database size={15} /> Cloud Ativo
         </button>
 
-        <button onClick={onOpenProlaboreModal} className="btn btn-secondary" style={{ fontSize: '0.82rem' }}>
-          <ArrowRightLeft size={15} color="var(--accent-amber)" /> Retirar Pró-Labore
+        {/* Retirar Pró-Labore */}
+        <button onClick={onOpenProlaboreModal} className="btn btn-pill-dark" style={{ fontSize: '0.82rem', borderColor: 'rgba(245, 158, 11, 0.4)', color: '#F59E0B' }}>
+          <ArrowRightLeft size={15} /> Retirar Pró-Labore
         </button>
 
-        <button onClick={onOpenCalendarModal} className="btn btn-secondary" style={{ fontSize: '0.82rem' }}>
+        {/* + Agendar */}
+        <button onClick={onOpenCalendarModal} className="btn btn-pill-dark" style={{ fontSize: '0.82rem' }}>
           <Plus size={15} /> Agendar
         </button>
 
-        <button onClick={onOpenGoalModal} className="btn btn-primary" style={{ fontSize: '0.82rem' }}>
+        {/* + Meta (Red Pill) */}
+        <button onClick={onOpenGoalModal} className="btn btn-red-pill">
           <Plus size={15} /> Meta
         </button>
 
-        <button onClick={onOpenTxModal} className="btn btn-cyan" style={{ fontSize: '0.82rem' }}>
+        {/* + Lançamento (Red Pill) */}
+        <button onClick={onOpenTxModal} className="btn btn-red-pill">
           <Plus size={15} /> Lançamento
         </button>
 
-        <button onClick={onOpenClientModal} className="btn btn-emerald" style={{ fontSize: '0.82rem' }}>
+        {/* + CRM (Red Pill) */}
+        <button onClick={onOpenClientModal} className="btn btn-red-pill">
           <Plus size={15} /> CRM
         </button>
+
       </div>
     </header>
   );

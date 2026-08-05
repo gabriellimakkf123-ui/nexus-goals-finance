@@ -10,7 +10,7 @@ import { ClientsView } from './components/Clients/ClientsView';
 import { DatabaseSettingsModal } from './components/Settings/DatabaseSettingsModal';
 
 const MainLayout = () => {
-  const { activeTab } = useApp();
+  const { activeTab, setActiveTab } = useApp();
 
   // Modais globais (abertos APENAS quando o usuário clica expressamente em um botão "+")
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
@@ -22,7 +22,11 @@ const MainLayout = () => {
 
   return (
     <div className="app-container">
-      <Sidebar onOpenDbModal={() => setIsDbModalOpen(true)} />
+      <Sidebar
+        onOpenDbModal={() => setIsDbModalOpen(true)}
+        onOpenTxModal={() => setIsTxModalOpen(true)}
+        onOpenClientModal={() => setIsClientModalOpen(true)}
+      />
 
       <main className="main-content">
         <Header
