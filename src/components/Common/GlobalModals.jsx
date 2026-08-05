@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Modal } from './Modal';
-import { generateId } from '../../utils/formatters';
+import { generateId, formatCurrency } from '../../utils/formatters';
 
 export const GlobalModals = ({
   isGoalModalOpen, setIsGoalModalOpen,
@@ -72,18 +72,24 @@ export const GlobalModals = ({
     setIsTxModalOpen(false);
   };
 
-  // 3. Form de Novo Cliente (CRM)
+  // 3. Form de Novo Cliente (CRM Dual PF Ventura vs PJ 100%)
   const [clientForm, setClientForm] = useState({
     name: '',
-    company: '',
+    company: 'Ventura',
     email: '',
     phone: '',
-    category: 'empresa',
-    contractType: 'mensalidade',
+    category: 'pessoal', // 'pessoal' (Venda de Barco PF) ou 'empresa' (Sua Empresa PJ 100%)
+    contractType: 'Contrato Cliente Ventura',
     value: '',
+    commissionRate: 1.25,
     notes: '',
     status: 'prospeccao'
   });
+
+  const isPF = clientForm.category === 'pessoal';
+  const totalValNum = parseFloat(clientForm.value) || 0;
+  const rateNum = parseFloat(clientForm.commissionRate) || 1.25;
+  const calculatedCommission = isPF ? (totalValNum * rateNum) / 100 : totalValNum;
 
   const handleClientSubmit = (e) => {
     e.preventDefault();
@@ -92,10 +98,23 @@ export const GlobalModals = ({
     addClient({
       id: generateId(),
       ...clientForm,
-      value: parseFloat(clientForm.value) || 0
+      value: totalValNum,
+      commissionRate: rateNum,
+      commissionValue: calculatedCommission
     });
 
-    setClientForm({ name: '', company: '', email: '', phone: '', category: 'empresa', contractType: 'mensalidade', value: '', notes: '', status: 'prospeccao' });
+    setClientForm({
+      name: '',
+      company: 'Ventura',
+      email: '',
+      phone: '',
+      category: 'pessoal',
+      contractType: 'Contrato Cliente Ventura',
+      value: '',
+      commissionRate: 1.25,
+      notes: '',
+      status: 'prospeccao'
+    });
     setIsClientModalOpen(false);
   };
 
@@ -144,7 +163,7 @@ export const GlobalModals = ({
             <input
               type="text"
               className="form-input"
-              placeholder="ex: Comprar Casa Própria / Reserva de Emergência"
+              placeholder="ex: Comprar Casa Própria / Lancha 55 pés"
               value={goalForm.title}
               onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
               required
@@ -182,7 +201,7 @@ export const GlobalModals = ({
                 type="number"
                 step="0.01"
                 className="form-input"
-                placeholder="10000.00"
+                placeholder="100000.00"
                 value={goalForm.targetAmount}
                 onChange={(e) => setGoalForm({ ...goalForm, targetAmount: e.target.value })}
                 required
@@ -227,7 +246,7 @@ export const GlobalModals = ({
             <input
               type="text"
               className="form-input"
-              placeholder="ex: Pagamento de Serviço / Venda V550"
+              placeholder="ex: Comissão Venda Barco Ventura / Serviço PJ"
               value={txForm.description}
               onChange={(e) => setTxForm({ ...txForm, description: e.target.value })}
               required
@@ -241,7 +260,7 @@ export const GlobalModals = ({
                 type="number"
                 step="0.01"
                 className="form-input"
-                placeholder="1500.00"
+                placeholder="12500.00"
                 value={txForm.amount}
                 onChange={(e) => setTxForm({ ...txForm, amount: e.target.value })}
                 required
@@ -269,8 +288,8 @@ export const GlobalModals = ({
                 value={txForm.account}
                 onChange={(e) => setTxForm({ ...txForm, account: e.target.value })}
               >
-                <option value="empresa">Caixa Empresa (PJ)</option>
-                <option value="pessoal">Caixa Pessoal (PF)</option>
+                <option value="pessoal">Caixa Pessoal (PF) - Comissões</option>
+                <option value="empresa">Caixa Empresa (PJ) - 100% Empresa</option>
               </select>
             </div>
 
@@ -292,74 +311,155 @@ export const GlobalModals = ({
         </form>
       </Modal>
 
-      {/* MODAL 3: Novo Cliente (CRM) */}
-      <Modal isOpen={isClientModalOpen} onClose={() => setIsClientModalOpen(false)} title="Novo Cliente / Lead (CRM)">
+      {/* MODAL 3: Novo Cliente / Lead (CRM Dual PF Ventura vs PJ 100%) */}
+      <Modal isOpen={isClientModalOpen} onClose={() => setIsClientModalOpen(false)} title="Novo Card no CRM (PF Ventura vs PJ 100%)">
         <form onSubmit={handleClientSubmit}>
           <div className="form-group">
-            <label className="form-label">Nome do Cliente / Prospect</label>
+            <label className="form-label">Tipo de Cliente / Carteira</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <button
+                type="button"
+                className="btn"
+                style={{
+                  background: isPF ? 'rgba(220, 38, 38, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                  border: isPF ? '2px solid #DC2626' : '1px solid var(--bg-glass-border)',
+                  color: isPF ? '#FFFFFF' : 'var(--text-secondary)',
+                  fontWeight: 700
+                }}
+                onClick={() => setClientForm({ ...clientForm, category: 'pessoal', contractType: 'Contrato Cliente Ventura', company: 'Ventura' })}
+              >
+                🚤 Pessoa Física (PF Ventura)
+              </button>
+
+              <button
+                type="button"
+                className="btn"
+                style={{
+                  background: !isPF ? 'rgba(37, 99, 235, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                  border: !isPF ? '2px solid #2563EB' : '1px solid var(--bg-glass-border)',
+                  color: !isPF ? '#FFFFFF' : 'var(--text-secondary)',
+                  fontWeight: 700
+                }}
+                onClick={() => setClientForm({ ...clientForm, category: 'empresa', contractType: 'Mensalidade Recorrente', company: 'Sua Empresa PJ' })}
+              >
+                🏢 Pessoa Jurídica (PJ 100%)
+              </button>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Nome do Cliente</label>
             <input
               type="text"
               className="form-input"
-              placeholder="ex: João Silva / Marcos Almeida"
+              placeholder="ex: Carlos Eduardo / João Silva"
               value={clientForm.name}
               onChange={(e) => setClientForm({ ...clientForm, name: e.target.value })}
               required
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">Tipo de Contrato</label>
-              <select
-                className="form-select"
-                value={clientForm.contractType}
-                onChange={(e) => setClientForm({ ...clientForm, contractType: e.target.value })}
-              >
-                <option value="mensalidade">Mensalidade Recorrente (MRR)</option>
-                <option value="projeto_pontual">Projeto Pontual</option>
-              </select>
-            </div>
+          {isPF ? (
+            /* Campos Específicos de Pessoa Física (Venda de Barco Ventura) */
+            <div style={{ background: 'rgba(220, 38, 38, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(220, 38, 38, 0.3)', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label className="form-label">Valor Total da Venda / Barco (R$)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-input"
+                  placeholder="ex: 1000000.00 (1 Milhão)"
+                  value={clientForm.value}
+                  onChange={(e) => setClientForm({ ...clientForm, value: e.target.value })}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Valor (R$)</label>
-              <input
-                type="number"
-                step="0.01"
-                className="form-input"
-                placeholder="5000.00"
-                value={clientForm.value}
-                onChange={(e) => setClientForm({ ...clientForm, value: e.target.value })}
-                required
-              />
-            </div>
-          </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label">Taxa de Comissão (%)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-input"
+                    value={clientForm.commissionRate}
+                    onChange={(e) => setClientForm({ ...clientForm, commissionRate: e.target.value })}
+                    required
+                  />
+                </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div className="form-group">
-              <label className="form-label">Categoria</label>
-              <select
-                className="form-select"
-                value={clientForm.category}
-                onChange={(e) => setClientForm({ ...clientForm, category: e.target.value })}
-              >
-                <option value="empresa">Empresarial (PJ)</option>
-                <option value="pessoal">Pessoal (PF)</option>
-              </select>
-            </div>
+                <div className="form-group">
+                  <label className="form-label">Sua Comissão Estimada</label>
+                  <div style={{
+                    padding: '0.6rem 0.85rem',
+                    background: '#090B12',
+                    border: '1px solid #DC2626',
+                    borderRadius: 'var(--radius-sm)',
+                    color: '#10B981',
+                    fontWeight: 800,
+                    fontSize: '1rem'
+                  }}>
+                    {formatCurrency(calculatedCommission)}
+                  </div>
+                </div>
+              </div>
 
-            <div className="form-group">
-              <label className="form-label">Coluna do Kanban</label>
-              <select
-                className="form-select"
-                value={clientForm.status}
-                onChange={(e) => setClientForm({ ...clientForm, status: e.target.value })}
-              >
-                <option value="prospeccao">Prospecção (Leads)</option>
-                <option value="proposta">Proposta Enviada</option>
-                <option value="fechado">Contrato Fechado (Ativo)</option>
-                <option value="concluido">Concluído</option>
-              </select>
+              <div className="form-group">
+                <label className="form-label">Tipo de Contrato / Origem</label>
+                <select
+                  className="form-select"
+                  value={clientForm.contractType}
+                  onChange={(e) => setClientForm({ ...clientForm, contractType: e.target.value })}
+                >
+                  <option value="Contrato Cliente Ventura">Contrato Cliente Ventura</option>
+                  <option value="Vendas Ventura">Vendas Ventura</option>
+                  <option value="Venda de Embarcação">Venda de Embarcação</option>
+                  <option value="Projeto Pontual">Projeto Pontual</option>
+                </select>
+              </div>
             </div>
+          ) : (
+            /* Campos Específicos de Pessoa Jurídica (Sua Empresa 100%) */
+            <div style={{ background: 'rgba(37, 99, 235, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(37, 99, 235, 0.3)', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label className="form-label">Valor do Contrato PJ (100% Sua Empresa) (R$)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="form-input"
+                  placeholder="ex: 5000.00"
+                  value={clientForm.value}
+                  onChange={(e) => setClientForm({ ...clientForm, value: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Modelo de Receita PJ</label>
+                <select
+                  className="form-select"
+                  value={clientForm.contractType}
+                  onChange={(e) => setClientForm({ ...clientForm, contractType: e.target.value })}
+                >
+                  <option value="mensalidade">Mensalidade Recorrente (MRR)</option>
+                  <option value="projeto_pontual">Projeto Pontual</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          <div className="form-group">
+            <label className="form-label">Etapa no Funil Kanban</label>
+            <select
+              className="form-select"
+              value={clientForm.status}
+              onChange={(e) => setClientForm({ ...clientForm, status: e.target.value })}
+            >
+              <option value="prospeccao">Prospecção (Leads)</option>
+              <option value="proposta">Proposta Enviada</option>
+              <option value="fechado">Contrato Fechado (Ativo)</option>
+              <option value="concluido">Concluído</option>
+            </select>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
@@ -404,7 +504,7 @@ export const GlobalModals = ({
             <input
               type="text"
               className="form-input"
-              placeholder="ex: Reunião de Fechamento / Consultoria Náutica"
+              placeholder="ex: Reunião de Fechamento / Visita Técnica Ventura"
               value={eventForm.title}
               onChange={(e) => setEventForm({ ...eventForm, title: e.target.value })}
               required

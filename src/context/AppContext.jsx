@@ -187,14 +187,36 @@ export const AppProvider = ({ children }) => {
     setTransactions((prev) => [txPJ, txPF, ...prev]);
   };
 
-  // --- Ações de Clientes CRM ---
+  // --- Ações de Clientes CRM com Lógica Ventura (PF: 1.25% comissão | PJ: 100% faturamento) ---
   const addClient = (newClient) => {
-    setClients((prev) => [newClient, ...prev]);
+    const isPF = newClient.category === 'pessoal';
+    const rate = newClient.commissionRate || 1.25;
+    const numVal = parseFloat(newClient.value) || 0;
+    const computedCommission = isPF ? (numVal * rate) / 100 : numVal;
+
+    const fullClient = {
+      ...newClient,
+      commissionRate: rate,
+      commissionValue: computedCommission
+    };
+
+    setClients((prev) => [fullClient, ...prev]);
   };
 
   const updateClient = (updatedClient) => {
+    const isPF = updatedClient.category === 'pessoal';
+    const rate = updatedClient.commissionRate || 1.25;
+    const numVal = parseFloat(updatedClient.value) || 0;
+    const computedCommission = isPF ? (numVal * rate) / 100 : numVal;
+
+    const fullClient = {
+      ...updatedClient,
+      commissionRate: rate,
+      commissionValue: computedCommission
+    };
+
     setClients((prev) =>
-      prev.map((c) => (c.id === updatedClient.id ? updatedClient : c))
+      prev.map((c) => (c.id === fullClient.id ? fullClient : c))
     );
   };
 
@@ -216,19 +238,29 @@ export const AppProvider = ({ children }) => {
     );
   };
 
+  // Gerar receita automática: Se PF (Venda Barco Ventura) -> Entra COMISSÃO (1.25%) no Caixa PF! Se PJ -> Entra 100% no Caixa PJ!
   const generateClientPayment = (client) => {
     const isPessoal = client.category === 'pessoal';
+    const rate = client.commissionRate || 1.25;
+    const totalSaleVal = parseFloat(client.value) || 0;
+    const commissionVal = client.commissionValue || (totalSaleVal * rate) / 100;
+
+    const txAmount = isPessoal ? commissionVal : totalSaleVal;
+
     const tx = {
       id: Date.now().toString(),
-      description: `Pagamento ${client.contractType === 'mensalidade' ? 'Mensal' : 'Projeto'} - ${client.name}`,
-      amount: client.value,
+      description: isPessoal
+        ? `Comissão (${rate}%) Venda Ventura - ${client.name}`
+        : `Receita Contrato PJ - ${client.name}`,
+      amount: txAmount,
       type: 'receita',
       account: isPessoal ? 'pessoal' : 'empresa',
-      category: client.contractType === 'mensalidade' ? 'Contrato Recorrente' : 'Projeto Pontual',
+      category: isPessoal ? 'Comissão Venda Barco (Ventura)' : (client.contractType === 'mensalidade' ? 'Contrato Recorrente' : 'Projeto Pontual'),
       date: new Date().toISOString().split('T')[0],
-      recurring: client.contractType === 'mensalidade',
+      recurring: !isPessoal && client.contractType === 'mensalidade',
       clientId: client.id
     };
+
     addTransaction(tx);
     triggerCelebration();
   };
