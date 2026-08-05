@@ -1,9 +1,8 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { isDatabaseConnected } from '../services/supabase';
 import {
   LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
-  PlusCircle, BarChart3, Settings, Moon, Sun
+  Settings, Moon, Sun
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
@@ -20,9 +19,6 @@ export const Sidebar = ({
     { id: 'financas', label: 'Financeiro (PF & PJ)', icon: Wallet },
     { id: 'clientes', label: 'Clientes (CRM Dual)', icon: Users },
     { id: 'agenda', label: 'Agenda & Tarefas', icon: CalendarIcon },
-    { id: 'lancamentos', label: 'Lançamentos', icon: PlusCircle, action: onOpenTxModal },
-    { id: 'crm', label: 'CRM', icon: Users, action: () => setActiveTab('clientes') },
-    { id: 'relatorios', label: 'Relatórios', icon: BarChart3, action: () => setActiveTab('dashboard') },
     { id: 'configuracoes', label: 'Configurações', icon: Settings, action: onOpenDbModal },
   ];
 
@@ -46,12 +42,12 @@ export const Sidebar = ({
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Superior Esquerda AUMENTADA E TOTALMENTE CENTRALIZADA */}
+        {/* Logo Superior Esquerda Centralizada */}
         <div style={{
           padding: '0.5rem 0.25rem 1.5rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
-          justifyContent: 'center',
+          justify: 'center',
           alignItems: 'center',
           height: '130px',
           overflow: 'hidden',
@@ -72,7 +68,7 @@ export const Sidebar = ({
           />
         </div>
 
-        {/* Links de Navegação */}
+        {/* Links de Navegação Principal */}
         <nav style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
