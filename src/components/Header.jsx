@@ -23,7 +23,7 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Central Logo Banner DESLOCADO PARA A DIREITA, Right Profile Utilities) */}
+      {/* Top Banner Row (Greeting Left, Central Logo Banner 100% COMPLETO E ALINHADO, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -45,31 +45,30 @@ export const Header = ({
           </p>
         </div>
 
-        {/* Banner de Logo Central ao lado de Gabriel Lima DESLOCADO UM POUCO MAIS PARA A DIREITA */}
+        {/* Banner de Logo Central Vertex Digital (100% Visível, Perfeitamente Alinhado e Sem Cortes) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '1.5rem',
-          padding: '1rem 2.5rem',
-          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.4), transparent 80%)',
+          padding: '0.6rem 2rem',
+          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.4), rgba(12, 15, 25, 0.6) 80%)',
           borderRadius: 'var(--radius-md)',
-          height: '140px',
-          overflow: 'hidden',
-          marginLeft: 'auto',
-          marginRight: '1rem'
+          border: '1px solid rgba(220, 38, 38, 0.4)',
+          boxShadow: '0 0 30px rgba(220, 38, 38, 0.35)',
+          height: '95px',
+          maxWidth: '380px',
+          width: '100%',
+          overflow: 'visible'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital Banner"
             style={{
-              height: '110px',
+              height: '100%',
               width: 'auto',
-              maxWidth: '450px',
+              maxWidth: '100%',
               objectFit: 'contain',
-              transform: 'scale(3.7) translateX(15px)',
-              transformOrigin: 'center center',
-              filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.85))'
+              filter: 'drop-shadow(0 0 20px rgba(220, 38, 38, 0.9))'
             }}
           />
         </div>
@@ -100,7 +99,8 @@ export const Header = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '2px solid #07090E'
+              border: '2px solid #06080E',
+              boxShadow: '0 0 8px rgba(220, 38, 38, 0.8)'
             }}>
               3
             </span>
@@ -113,11 +113,12 @@ export const Header = ({
             gap: '0.5rem',
             padding: '0.55rem 0.95rem',
             background: 'rgba(255, 255, 255, 0.04)',
-            border: '1px solid var(--bg-glass-border)',
+            border: '1px solid rgba(220, 38, 38, 0.3)',
             borderRadius: 'var(--radius-sm)',
             fontSize: '0.8rem',
             color: '#FFFFFF',
-            fontWeight: 600
+            fontWeight: 600,
+            boxShadow: '0 0 10px rgba(220, 38, 38, 0.15)'
           }}>
             <CalendarIcon size={14} color="var(--text-secondary)" />
             <span>01 - 31 Agosto, 2026</span>
@@ -130,21 +131,22 @@ export const Header = ({
             gap: '0.65rem',
             padding: '0.4rem 0.85rem',
             background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid var(--bg-glass-border)',
-            borderRadius: '100px'
+            border: '1px solid rgba(220, 38, 38, 0.3)',
+            borderRadius: '100px',
+            boxShadow: '0 0 12px rgba(220, 38, 38, 0.2)'
           }}>
             <div style={{
               width: '32px',
               height: '32px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #DC2626, #B91C1C)',
+              background: 'linear-gradient(135deg, #DC2626, #991B1B)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
               fontSize: '0.78rem',
               fontWeight: 800,
-              boxShadow: '0 0 10px rgba(220, 38, 38, 0.5)'
+              boxShadow: '0 0 10px rgba(220, 38, 38, 0.6)'
             }}>
               GL
             </div>
