@@ -8,11 +8,12 @@ import { GoalsView } from './components/Goals/GoalsView';
 import { FinanceView } from './components/Finance/FinanceView';
 import { ClientsView } from './components/Clients/ClientsView';
 import { DatabaseSettingsModal } from './components/Settings/DatabaseSettingsModal';
+import { GlobalModals } from './components/Common/GlobalModals';
 
 const MainLayout = () => {
-  const { activeTab, setActiveTab } = useApp();
+  const { activeTab } = useApp();
 
-  // Modais globais (abertos APENAS quando o usuário clica expressamente em um botão "+")
+  // Modais globais (renderizados SEMPRE no topo da aplicação)
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [isTxModalOpen, setIsTxModalOpen] = useState(false);
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
@@ -76,6 +77,15 @@ const MainLayout = () => {
             setIsModalOpen={setIsClientModalOpen}
           />
         )}
+
+        {/* Global Modals sempre ativos e visíveis em qualquer tela da aplicação */}
+        <GlobalModals
+          isGoalModalOpen={isGoalModalOpen} setIsGoalModalOpen={setIsGoalModalOpen}
+          isTxModalOpen={isTxModalOpen} setIsTxModalOpen={setIsTxModalOpen}
+          isClientModalOpen={isClientModalOpen} setIsClientModalOpen={setIsClientModalOpen}
+          isProlaboreModalOpen={isProlaboreModalOpen} setIsProlaboreModalOpen={setIsProlaboreModalOpen}
+          isCalendarModalOpen={isCalendarModalOpen} setIsCalendarModalOpen={setIsCalendarModalOpen}
+        />
 
         {/* Modal de Configuração do Banco de Dados Cloud */}
         <DatabaseSettingsModal
