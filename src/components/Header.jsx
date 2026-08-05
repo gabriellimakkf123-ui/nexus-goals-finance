@@ -23,7 +23,7 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO PARA ESCALA 3.7x, Right Profile Utilities) */}
+      {/* Top Banner Row (Greeting Left, Central Logo Banner DESLOCADO PARA A DIREITA, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -45,7 +45,7 @@ export const Header = ({
           </p>
         </div>
 
-        {/* Banner de Logo Central ao lado de Gabriel Lima AUMENTADO PARA ESCALA 3.7X */}
+        {/* Banner de Logo Central ao lado de Gabriel Lima DESLOCADO UM POUCO MAIS PARA A DIREITA */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -55,7 +55,9 @@ export const Header = ({
           background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.4), transparent 80%)',
           borderRadius: 'var(--radius-md)',
           height: '140px',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          marginLeft: 'auto',
+          marginRight: '1rem'
         }}>
           <img
             src={logoImg}
@@ -65,7 +67,7 @@ export const Header = ({
               width: 'auto',
               maxWidth: '450px',
               objectFit: 'contain',
-              transform: 'scale(3.7)',
+              transform: 'scale(3.7) translateX(15px)',
               transformOrigin: 'center center',
               filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.85))'
             }}
