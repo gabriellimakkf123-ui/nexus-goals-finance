@@ -46,14 +46,16 @@ export const Sidebar = ({
       flexShrink: 0
     }}>
       <div>
-        {/* Logo 3D Superior Esquerdo Aumentada Significativamente */}
+        {/* Logo Superior Esquerda AUMENTADA E TOTALMENTE CENTRALIZADA */}
         <div style={{
           padding: '0.5rem 0.25rem 1.5rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
-          height: '115px',
-          overflow: 'hidden'
+          height: '130px',
+          overflow: 'hidden',
+          width: '100%'
         }}>
           <img
             src={logoImg}
@@ -63,8 +65,8 @@ export const Sidebar = ({
               width: 'auto',
               maxWidth: '280px',
               objectFit: 'contain',
-              transform: 'scale(2.8)',
-              transformOrigin: 'left center',
+              transform: 'scale(3.2)',
+              transformOrigin: 'center center',
               filter: 'drop-shadow(0 6px 20px rgba(220, 38, 38, 0.6))'
             }}
           />

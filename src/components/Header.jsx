@@ -23,7 +23,7 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO, Right Profile Utilities) */}
+      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO PARA ESCALA 3.7x, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -45,27 +45,29 @@ export const Header = ({
           </p>
         </div>
 
-        {/* Banner de Logo Central ao lado de Gabriel Lima AUMENTADO */}
+        {/* Banner de Logo Central ao lado de Gabriel Lima AUMENTADO PARA ESCALA 3.7X */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
+          justifyContent: 'center',
           gap: '1.5rem',
-          padding: '0.75rem 2rem',
-          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.35), transparent 75%)',
+          padding: '1rem 2.5rem',
+          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.4), transparent 80%)',
           borderRadius: 'var(--radius-md)',
-          height: '110px'
+          height: '140px',
+          overflow: 'hidden'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital Banner"
             style={{
-              height: '100px',
+              height: '110px',
               width: 'auto',
-              maxWidth: '380px',
+              maxWidth: '450px',
               objectFit: 'contain',
-              transform: 'scale(1.35)',
-              transformOrigin: 'center',
-              filter: 'drop-shadow(0 0 25px rgba(220, 38, 38, 0.75))'
+              transform: 'scale(3.7)',
+              transformOrigin: 'center center',
+              filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.85))'
             }}
           />
         </div>
