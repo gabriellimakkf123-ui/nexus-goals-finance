@@ -23,7 +23,7 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Central Logo Banner 100% COMPLETO E ALINHADO, Right Profile Utilities) */}
+      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO PARA ESCALA 3.7x SEM CORTE, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -45,30 +45,33 @@ export const Header = ({
           </p>
         </div>
 
-        {/* Banner de Logo Central Vertex Digital (100% Visível, Perfeitamente Alinhado e Sem Cortes) */}
+        {/* Banner de Logo Central Vertex Digital na ESCALA 3.7X EXPANDIDA (Sem Cortes) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '0.6rem 2rem',
-          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.4), rgba(12, 15, 25, 0.6) 80%)',
+          padding: '1.5rem 3rem',
+          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.45), rgba(12, 15, 25, 0.7) 85%)',
           borderRadius: 'var(--radius-md)',
-          border: '1px solid rgba(220, 38, 38, 0.4)',
-          boxShadow: '0 0 30px rgba(220, 38, 38, 0.35)',
-          height: '95px',
-          maxWidth: '380px',
-          width: '100%',
-          overflow: 'visible'
+          border: '1px solid rgba(220, 38, 38, 0.5)',
+          boxShadow: '0 0 45px rgba(220, 38, 38, 0.45)',
+          height: '160px',
+          maxWidth: '750px',
+          flex: '1 1 500px',
+          overflow: 'visible',
+          margin: '0 1rem'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital Banner"
             style={{
-              height: '100%',
+              height: '120px',
               width: 'auto',
               maxWidth: '100%',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 0 20px rgba(220, 38, 38, 0.9))'
+              transform: 'scale(3.7)',
+              transformOrigin: 'center center',
+              filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.95))'
             }}
           />
         </div>
