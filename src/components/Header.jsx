@@ -23,13 +23,13 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Huge Central Header Banner, Right Profile Utilities) */}
+      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO, Right Profile Utilities) */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1.25rem'
+        gap: '1.5rem'
       }}>
         
         {/* Left Greeting */}
@@ -37,31 +37,35 @@ export const Header = ({
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.1rem' }}>
             Bem-vindo de volta,
           </span>
-          <h1 style={{ fontSize: '2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.1' }}>
+          <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.1' }}>
             GABRIEL LIMA
           </h1>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
             Visão geral do seu negócio
           </p>
         </div>
 
-        {/* Central Logo Header Banner igual ao Print */}
+        {/* Banner de Logo Central ao lado de Gabriel Lima AUMENTADO */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '1rem',
-          padding: '0.5rem 1.5rem',
-          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.25), transparent 70%)',
-          borderRadius: 'var(--radius-md)'
+          gap: '1.5rem',
+          padding: '0.75rem 2rem',
+          background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.35), transparent 75%)',
+          borderRadius: 'var(--radius-md)',
+          height: '110px'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital Banner"
             style={{
-              height: '70px',
+              height: '100px',
               width: 'auto',
+              maxWidth: '380px',
               objectFit: 'contain',
-              filter: 'drop-shadow(0 0 15px rgba(220, 38, 38, 0.6))'
+              transform: 'scale(1.35)',
+              transformOrigin: 'center',
+              filter: 'drop-shadow(0 0 25px rgba(220, 38, 38, 0.75))'
             }}
           />
         </div>
@@ -149,7 +153,7 @@ export const Header = ({
         </div>
       </div>
 
-      {/* Row of Action Pill Buttons (Idênticos ao Print) */}
+      {/* Row of Action Pill Buttons */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         
         {/* Cloud Ativo */}

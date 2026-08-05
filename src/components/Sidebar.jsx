@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
 import {
   LayoutDashboard, Target, Wallet, Users, Calendar as CalendarIcon,
-  PlusCircle, BarChart3, Settings, Moon, Sun, ShieldCheck
+  PlusCircle, BarChart3, Settings, Moon, Sun
 } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
@@ -36,7 +36,7 @@ export const Sidebar = ({
 
   return (
     <aside style={{
-      width: '270px',
+      width: '280px',
       background: 'var(--bg-sidebar)',
       borderRight: '1px solid var(--bg-glass-border)',
       display: 'flex',
@@ -46,13 +46,13 @@ export const Sidebar = ({
       flexShrink: 0
     }}>
       <div>
-        {/* Logo 3D Vertex Digital */}
+        {/* Logo 3D Superior Esquerdo Aumentada Significativamente */}
         <div style={{
-          padding: '0.25rem 0.25rem 1.25rem 0.25rem',
+          padding: '0.5rem 0.25rem 1.5rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
           display: 'flex',
           alignItems: 'center',
-          height: '90px',
+          height: '115px',
           overflow: 'hidden'
         }}>
           <img
@@ -61,16 +61,16 @@ export const Sidebar = ({
             style={{
               height: '100%',
               width: 'auto',
-              maxWidth: '260px',
+              maxWidth: '280px',
               objectFit: 'contain',
-              transform: 'scale(2.2)',
+              transform: 'scale(2.8)',
               transformOrigin: 'left center',
-              filter: 'drop-shadow(0 6px 16px rgba(220, 38, 38, 0.45))'
+              filter: 'drop-shadow(0 6px 20px rgba(220, 38, 38, 0.6))'
             }}
           />
         </div>
 
-        {/* Links de Navegação Fies ao Print */}
+        {/* Links de Navegação */}
         <nav style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -84,7 +84,7 @@ export const Sidebar = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.85rem',
-                  padding: '0.7rem 0.95rem',
+                  padding: '0.75rem 0.95rem',
                   borderRadius: 'var(--radius-sm)',
                   border: isActive ? '1px solid #DC2626' : '1px solid transparent',
                   background: isActive ? 'rgba(220, 38, 38, 0.15)' : 'transparent',
@@ -105,10 +105,9 @@ export const Sidebar = ({
         </nav>
       </div>
 
-      {/* Footer Banner com Marca Vertex Digital (Red Glowing Box) */}
+      {/* Footer Banner com Marca Vertex Digital */}
       <div style={{ marginTop: 'auto', paddingTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         
-        {/* Banner do Canto Inferior Esquerdo do Print */}
         <div style={{
           padding: '1rem',
           background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(9, 11, 18, 0.8))',
