@@ -84,7 +84,7 @@ export const Header = ({
           />
         </div>
 
-        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge + Logout) */}
+        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge + Standalone Logout Button) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
           
           <button className="btn-icon" title="Buscar">
@@ -135,7 +135,7 @@ export const Header = ({
             <span>01 - 31 Agosto, 2026</span>
           </div>
 
-          {/* Profile Pill com Botão de Sair Totalmente Interativo */}
+          {/* Profile Pill */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -165,30 +165,24 @@ export const Header = ({
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', lineHeight: '1.1' }}>{userName}</span>
               <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{userRole}</span>
             </div>
-
-            {/* Botão de Logout de Alto Destaque */}
-            <button
-              type="button"
-              onClick={handleLogoutClick}
-              className="btn-icon"
-              style={{
-                padding: '0.35rem',
-                borderRadius: '50%',
-                background: 'rgba(220, 38, 38, 0.25)',
-                border: '1px solid rgba(220, 38, 38, 0.6)',
-                color: '#FF4D4D',
-                cursor: 'pointer',
-                marginLeft: '0.4rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-              title="Sair do Sistema (Logout)"
-            >
-              <LogOut size={16} />
-            </button>
           </div>
+
+          {/* Botão Independente de SAIR (Logout) */}
+          <button
+            type="button"
+            onClick={handleLogoutClick}
+            className="btn btn-red-pill"
+            style={{
+              padding: '0.55rem 0.95rem',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #EF4444, #DC2626)',
+              boxShadow: '0 0 15px rgba(220, 38, 38, 0.5)'
+            }}
+            title="Sair do Sistema (Logout)"
+          >
+            <LogOut size={15} /> Sair
+          </button>
 
         </div>
       </div>

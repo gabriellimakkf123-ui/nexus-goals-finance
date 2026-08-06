@@ -10,12 +10,14 @@ export const AppProvider = ({ children }) => {
     const saved = localStorage.getItem('vertex_user_session');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed.isAuthenticated === 'boolean') {
+          return parsed;
+        }
       } catch (e) {
         console.error('Erro ao ler sessão do usuário:', e);
       }
     }
-    // Por padrão no primeiro acesso solicita o Login
     return { isAuthenticated: false, user: null };
   });
 
@@ -36,9 +38,12 @@ export const AppProvider = ({ children }) => {
     triggerCelebration();
   };
 
+  // Função Logout Garantida: Limpa LocalStorage e Recarrega para a Tela de Login
   const logout = () => {
-    setUserSession({ isAuthenticated: false, user: null });
     localStorage.removeItem('vertex_user_session');
+    localStorage.setItem('vertex_user_session', JSON.stringify({ isAuthenticated: false, user: null }));
+    setUserSession({ isAuthenticated: false, user: null });
+    window.location.reload();
   };
 
   // Estado de Metas
@@ -223,7 +228,7 @@ export const AppProvider = ({ children }) => {
     setTransactions((prev) => [txPJ, txPF, ...prev]);
   };
 
-  // --- Ações de Clientes CRM com Lógica Ventura (PF: 1.25% comissão | PJ: 100% faturamento) ---
+  // --- Ações de Clientes CRM com Lógica Ventura ---
   const addClient = (newClient) => {
     const isPF = newClient.category === 'pessoal';
     const rate = newClient.commissionRate || 1.25;
