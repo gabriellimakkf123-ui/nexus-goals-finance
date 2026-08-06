@@ -5,6 +5,42 @@ import confetti from 'canvas-confetti';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+  // Estado de Autenticação / Login Personalizado Vertex Digital
+  const [userSession, setUserSession] = useState(() => {
+    const saved = localStorage.getItem('vertex_user_session');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Erro ao ler sessão do usuário:', e);
+      }
+    }
+    // Por padrão no primeiro acesso solicita o Login
+    return { isAuthenticated: false, user: null };
+  });
+
+  const login = (email, password, rememberMe = true) => {
+    const session = {
+      isAuthenticated: true,
+      user: {
+        name: 'Gabriel Lima',
+        role: 'Consultor Náutico',
+        email: email || 'gabriel.lima@vertexdigital.com'
+      }
+    };
+
+    setUserSession(session);
+    if (rememberMe) {
+      localStorage.setItem('vertex_user_session', JSON.stringify(session));
+    }
+    triggerCelebration();
+  };
+
+  const logout = () => {
+    setUserSession({ isAuthenticated: false, user: null });
+    localStorage.removeItem('vertex_user_session');
+  };
+
   // Estado de Metas
   const [goals, setGoals] = useState(() => {
     const saved = localStorage.getItem('vertex_goals') || localStorage.getItem('nexus_goals');
@@ -238,7 +274,6 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  // Gerar receita automática: Se PF (Venda Barco Ventura) -> Entra COMISSÃO (1.25%) no Caixa PF! Se PJ -> Entra 100% no Caixa PJ!
   const generateClientPayment = (client) => {
     const isPessoal = client.category === 'pessoal';
     const rate = client.commissionRate || 1.25;
@@ -340,6 +375,9 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        userSession,
+        login,
+        logout,
         goals,
         addGoal,
         updateGoal,

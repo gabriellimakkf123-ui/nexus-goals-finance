@@ -9,9 +9,15 @@ import { FinanceView } from './components/Finance/FinanceView';
 import { ClientsView } from './components/Clients/ClientsView';
 import { DatabaseSettingsModal } from './components/Settings/DatabaseSettingsModal';
 import { GlobalModals } from './components/Common/GlobalModals';
+import { LoginView } from './components/Auth/LoginView';
 
 const MainLayout = () => {
-  const { activeTab } = useApp();
+  const { activeTab, userSession } = useApp();
+
+  // Se o usuário não estiver autenticado, exibe a Tela de Login Personalizada Vertex Digital
+  if (!userSession?.isAuthenticated) {
+    return <LoginView />;
+  }
 
   // Modais globais (renderizados SEMPRE no topo da aplicação)
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);

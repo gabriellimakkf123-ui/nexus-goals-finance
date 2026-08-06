@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { isDatabaseConnected } from '../services/supabase';
-import { Plus, ArrowRightLeft, Search, Bell, Calendar as CalendarIcon, Database } from 'lucide-react';
+import { Plus, ArrowRightLeft, Search, Bell, Calendar as CalendarIcon, Database, LogOut } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 export const Header = ({
@@ -12,8 +12,10 @@ export const Header = ({
   onOpenCalendarModal,
   onOpenDbModal
 }) => {
-  const { activeTab } = useApp();
+  const { activeTab, userSession, logout } = useApp();
   const isDbConnected = isDatabaseConnected();
+  const userName = userSession?.user?.name || 'Gabriel Lima';
+  const userRole = userSession?.user?.role || 'Consultor Náutico';
 
   return (
     <header style={{
@@ -23,7 +25,7 @@ export const Header = ({
       marginBottom: '1.75rem',
       position: 'relative'
     }}>
-      {/* Top Banner Row (Greeting Left, Central Logo Banner AUMENTADO PARA ESCALA 3.7x SEM CORTE, Right Profile Utilities) */}
+      {/* Top Banner Row */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -38,14 +40,14 @@ export const Header = ({
             Bem-vindo de volta,
           </span>
           <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.02em', lineHeight: '1.1' }}>
-            GABRIEL LIMA
+            {userName.toUpperCase()}
           </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
             Visão geral do seu negócio
           </p>
         </div>
 
-        {/* Banner de Logo Central Vertex Digital na ESCALA 3.7X EXPANDIDA (Sem Cortes) */}
+        {/* Banner de Logo Central Vertex Digital */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -76,7 +78,7 @@ export const Header = ({
           />
         </div>
 
-        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge) */}
+        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge + Logout) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
           
           <button className="btn-icon" title="Buscar">
@@ -127,7 +129,7 @@ export const Header = ({
             <span>01 - 31 Agosto, 2026</span>
           </div>
 
-          {/* Profile Pill */}
+          {/* Profile Pill com Botão de Sair (Logout) */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -154,9 +156,26 @@ export const Header = ({
               GL
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', lineHeight: '1.1' }}>Gabriel Lima</span>
-              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Consultor Náutico</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', lineHeight: '1.1' }}>{userName}</span>
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{userRole}</span>
             </div>
+
+            <button
+              onClick={logout}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#F87171',
+                cursor: 'pointer',
+                padding: '0.2rem',
+                marginLeft: '0.3rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              title="Sair do Sistema (Logout)"
+            >
+              <LogOut size={16} />
+            </button>
           </div>
 
         </div>
