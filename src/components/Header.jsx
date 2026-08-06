@@ -17,6 +17,12 @@ export const Header = ({
   const userName = userSession?.user?.name || 'Gabriel Lima';
   const userRole = userSession?.user?.role || 'Consultor Náutico';
 
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    logout();
+  };
+
   return (
     <header style={{
       display: 'flex',
@@ -129,7 +135,7 @@ export const Header = ({
             <span>01 - 31 Agosto, 2026</span>
           </div>
 
-          {/* Profile Pill com Botão de Sair (Logout) */}
+          {/* Profile Pill com Botão de Sair Totalmente Interativo */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -160,17 +166,23 @@ export const Header = ({
               <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>{userRole}</span>
             </div>
 
+            {/* Botão de Logout de Alto Destaque */}
             <button
-              onClick={logout}
+              type="button"
+              onClick={handleLogoutClick}
+              className="btn-icon"
               style={{
-                background: 'none',
-                border: 'none',
-                color: '#F87171',
+                padding: '0.35rem',
+                borderRadius: '50%',
+                background: 'rgba(220, 38, 38, 0.25)',
+                border: '1px solid rgba(220, 38, 38, 0.6)',
+                color: '#FF4D4D',
                 cursor: 'pointer',
-                padding: '0.2rem',
-                marginLeft: '0.3rem',
+                marginLeft: '0.4rem',
                 display: 'flex',
-                alignItems: 'center'
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
               }}
               title="Sair do Sistema (Logout)"
             >
