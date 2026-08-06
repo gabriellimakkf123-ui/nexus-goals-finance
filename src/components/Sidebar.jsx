@@ -42,7 +42,7 @@ export const Sidebar = ({
       flexShrink: 0
     }}>
       <div>
-        {/* Logo Superior Esquerda Centralizada */}
+        {/* Logo Superior Esquerda Alinhada Perfeitamente à Direita Mantendo o Tamanho */}
         <div style={{
           padding: '0.5rem 0.25rem 1.5rem 0.25rem',
           borderBottom: '1px solid var(--bg-glass-border)',
@@ -61,7 +61,7 @@ export const Sidebar = ({
               width: 'auto',
               maxWidth: '280px',
               objectFit: 'contain',
-              transform: 'scale(3.2)',
+              transform: 'scale(3.2) translateX(18px)',
               transformOrigin: 'center center',
               filter: 'drop-shadow(0 6px 20px rgba(220, 38, 38, 0.6))'
             }}
