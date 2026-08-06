@@ -29,7 +29,8 @@ export const Header = ({
       flexDirection: 'column',
       gap: '1.25rem',
       marginBottom: '1.75rem',
-      position: 'relative'
+      position: 'relative',
+      zIndex: 10
     }}>
       {/* Top Banner Row */}
       <div style={{
@@ -37,11 +38,12 @@ export const Header = ({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '1.5rem'
+        gap: '1.5rem',
+        position: 'relative'
       }}>
         
         {/* Left Greeting */}
-        <div>
+        <div style={{ position: 'relative', zIndex: 20 }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '0.1rem' }}>
             Bem-vindo de volta,
           </span>
@@ -53,39 +55,51 @@ export const Header = ({
           </p>
         </div>
 
-        {/* Banner de Logo Central Vertex Digital */}
+        {/* Banner de Logo Central Vertex Digital (Com pointer-events: none para NÃO bloquear cliques ao redor) */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '1.5rem 3rem',
+          padding: '1rem 2.5rem',
           background: 'radial-gradient(ellipse at center, rgba(220, 38, 38, 0.45), rgba(12, 15, 25, 0.7) 85%)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid rgba(220, 38, 38, 0.5)',
           boxShadow: '0 0 45px rgba(220, 38, 38, 0.45)',
-          height: '160px',
-          maxWidth: '750px',
-          flex: '1 1 500px',
-          overflow: 'visible',
-          margin: '0 1rem'
+          height: '140px',
+          maxWidth: '650px',
+          flex: '1 1 450px',
+          overflow: 'hidden',
+          margin: '0 1rem',
+          position: 'relative',
+          zIndex: 5,
+          pointerEvents: 'none'
         }}>
           <img
             src={logoImg}
             alt="Vertex Digital Banner"
             style={{
-              height: '120px',
+              height: '100px',
               width: 'auto',
               maxWidth: '100%',
               objectFit: 'contain',
-              transform: 'scale(3.7)',
+              transform: 'scale(2.8)',
               transformOrigin: 'center center',
-              filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.95))'
+              filter: 'drop-shadow(0 0 35px rgba(220, 38, 38, 0.95))',
+              pointerEvents: 'none'
             }}
           />
         </div>
 
-        {/* Right Header Utilities (Search, Bell, Date Pill, Profile Badge + Standalone Logout Button) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+        {/* Right Header Utilities (Com Z-INDEX MÁXIMO 9999 e POINTER-EVENTS TOTALMENTE ATIVO) */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.85rem',
+          flexWrap: 'wrap',
+          position: 'relative',
+          zIndex: 9999,
+          pointerEvents: 'auto'
+        }}>
           
           <button className="btn-icon" title="Buscar">
             <Search size={16} />
@@ -167,28 +181,32 @@ export const Header = ({
             </div>
           </div>
 
-          {/* Botão Independente de SAIR (Logout) */}
+          {/* Botão Independente de SAIR (Logout) com Z-Index Elevado 10000 */}
           <button
             type="button"
             onClick={handleLogoutClick}
             className="btn btn-red-pill"
             style={{
-              padding: '0.55rem 0.95rem',
-              fontSize: '0.8rem',
+              padding: '0.6rem 1.1rem',
+              fontSize: '0.85rem',
               fontWeight: 800,
               background: 'linear-gradient(135deg, #EF4444, #DC2626)',
-              boxShadow: '0 0 15px rgba(220, 38, 38, 0.5)'
+              boxShadow: '0 0 20px rgba(220, 38, 38, 0.6)',
+              cursor: 'pointer',
+              position: 'relative',
+              zIndex: 10000,
+              pointerEvents: 'auto'
             }}
             title="Sair do Sistema (Logout)"
           >
-            <LogOut size={15} /> Sair
+            <LogOut size={16} /> SAIR
           </button>
 
         </div>
       </div>
 
       {/* Row of Action Pill Buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', position: 'relative', zIndex: 20 }}>
         
         {/* Cloud Ativo */}
         <button
