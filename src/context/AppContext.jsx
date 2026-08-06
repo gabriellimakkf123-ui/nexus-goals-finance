@@ -38,7 +38,6 @@ export const AppProvider = ({ children }) => {
     triggerCelebration();
   };
 
-  // Função Logout Garantida: Limpa LocalStorage e Recarrega para a Tela de Login
   const logout = () => {
     localStorage.removeItem('vertex_user_session');
     localStorage.setItem('vertex_user_session', JSON.stringify({ isAuthenticated: false, user: null }));
@@ -82,6 +81,18 @@ export const AppProvider = ({ children }) => {
         ];
   });
 
+  // Estado de Notificações em Tempo Real
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem('vertex_notifications');
+    return saved
+      ? JSON.parse(saved)
+      : [
+          { id: 'n1', title: '📅 Compromisso Próximo', description: 'Reunião com fornecedor agendada na Agenda', time: 'Hoje', unread: true, linkTab: 'agenda' },
+          { id: 'n2', title: '💰 Comissão Venda Barco', description: 'Venda Ventura de Barco cadastrada com 1,25% de comissão', time: 'Hoje', unread: true, linkTab: 'clientes' },
+          { id: 'n3', title: '🎯 Meta Atualizada', description: 'Você está no caminho para atingir a meta mensal', time: 'Ontem', unread: true, linkTab: 'metas' }
+        ];
+  });
+
   // Modo Escuro / Claro
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('vertex_dark_mode');
@@ -112,6 +123,10 @@ export const AppProvider = ({ children }) => {
   }, [tasks]);
 
   useEffect(() => {
+    localStorage.setItem('vertex_notifications', JSON.stringify(notifications));
+  }, [notifications]);
+
+  useEffect(() => {
     localStorage.setItem('vertex_dark_mode', JSON.stringify(darkMode));
     if (darkMode) {
       document.body.classList.remove('light-mode');
@@ -136,9 +151,27 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  // Adicionar Notificação Dinâmica
+  const addNotification = (title, description, linkTab = 'dashboard') => {
+    const newNotif = {
+      id: Date.now().toString(),
+      title,
+      description,
+      time: 'Agora',
+      unread: true,
+      linkTab
+    };
+    setNotifications((prev) => [newNotif, ...prev]);
+  };
+
+  const markNotificationsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
+  };
+
   // --- Ações de Metas ---
   const addGoal = (newGoal) => {
     setGoals((prev) => [newGoal, ...prev]);
+    addNotification('🎯 Nova Meta Adicionada', `Meta "${newGoal.title}" cadastrada com sucesso.`, 'metas');
   };
 
   const updateGoal = (updatedGoal) => {
@@ -147,6 +180,7 @@ export const AppProvider = ({ children }) => {
         if (g.id === updatedGoal.id) {
           if (updatedGoal.status === 'concluida' && g.status !== 'concluida') {
             triggerCelebration();
+            addNotification('🎉 Meta Concluída!', `Parabéns! Você concluiu a meta "${g.title}".`, 'metas');
           }
           return updatedGoal;
         }
@@ -176,6 +210,7 @@ export const AppProvider = ({ children }) => {
   // --- Ações Financeiras ---
   const addTransaction = (newTx) => {
     setTransactions((prev) => [newTx, ...prev]);
+    addNotification('💰 Novo Lançamento Financeiro', `${newTx.description} (${newTx.account.toUpperCase()}) registrado.`, 'financas');
 
     if (newTx.type === 'receita') {
       const targetCategory = newTx.account === 'pessoal' ? 'pessoal' : 'empresarial';
@@ -184,7 +219,10 @@ export const AppProvider = ({ children }) => {
           if (g.category === targetCategory && g.status === 'em_andamento' && g.targetAmount > 0) {
             const newAmount = g.currentAmount + parseFloat(newTx.amount);
             const isFinished = newAmount >= g.targetAmount;
-            if (isFinished) triggerCelebration();
+            if (isFinished) {
+              triggerCelebration();
+              addNotification('🎉 Meta Atingida!', `Seu lançamento financiou e concluiu a meta "${g.title}"!`, 'metas');
+            }
             return {
               ...g,
               currentAmount: newAmount,
@@ -226,6 +264,7 @@ export const AppProvider = ({ children }) => {
     };
 
     setTransactions((prev) => [txPJ, txPF, ...prev]);
+    addNotification('🔄 Pró-Labore Efetuado', `Retirada de R$ ${numVal.toFixed(2)} transferida da Empresa para Conta Pessoal.`, 'financas');
   };
 
   // --- Ações de Clientes CRM com Lógica Ventura ---
@@ -242,6 +281,11 @@ export const AppProvider = ({ children }) => {
     };
 
     setClients((prev) => [fullClient, ...prev]);
+    addNotification(
+      isPF ? '🚤 Nova Venda Barco Ventura' : '🏢 Novo Cliente PJ',
+      isPF ? `Cliente ${newClient.name} cadastrado. Comissão (1,25%): R$ ${computedCommission.toFixed(2)}` : `Cliente PJ ${newClient.name} registrado.`,
+      'clientes'
+    );
   };
 
   const updateClient = (updatedClient) => {
@@ -271,6 +315,7 @@ export const AppProvider = ({ children }) => {
         if (c.id === clientId) {
           if (newStageId === 'fechado' && c.status !== 'fechado') {
             triggerCelebration();
+            addNotification('🤝 Contrato Fechado!', `Cliente ${c.name} avançou para Contrato Fechado!`, 'clientes');
           }
           return { ...c, status: newStageId };
         }
@@ -308,6 +353,7 @@ export const AppProvider = ({ children }) => {
   // --- Ações de Agenda & Compromissos ---
   const addEvent = (newEvent) => {
     setEvents((prev) => [newEvent, ...prev]);
+    addNotification('📅 Novo Agendamento', `Compromisso "${newEvent.title}" marcado para ${newEvent.date} às ${newEvent.time}`, 'agenda');
   };
 
   const updateEvent = (updatedEvent) => {
@@ -330,6 +376,7 @@ export const AppProvider = ({ children }) => {
       done: false
     };
     setTasks((prev) => [newTask, ...prev]);
+    addNotification('📝 Nova Tarefa Criada', `Tarefa "${taskText}" (${priority}) criada para ${date}.`, 'dashboard');
   };
 
   const toggleTask = (taskId) => {
@@ -344,7 +391,7 @@ export const AppProvider = ({ children }) => {
 
   // Backup & Restauração
   const exportData = () => {
-    const data = { goals, transactions, clients, events, tasks, system: 'Vertex Digital', version: '2.5' };
+    const data = { goals, transactions, clients, events, tasks, notifications, system: 'Vertex Digital', version: '2.5' };
     const jsonStr = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -406,6 +453,9 @@ export const AppProvider = ({ children }) => {
         addTask,
         toggleTask,
         deleteTask,
+        notifications,
+        addNotification,
+        markNotificationsRead,
         darkMode,
         toggleDarkMode,
         activeTab,
